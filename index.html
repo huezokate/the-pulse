@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1418,6 +1420,109 @@
       0%, 100% { box-shadow: 0 0 8px #B44FFF, 0 0 16px rgba(180,79,255,0.3); }
       50%       { box-shadow: 0 0 18px #B44FFF, 0 0 36px rgba(180,79,255,0.5); }
     }
+
+    /* ── PULSE MAP WIDGET ── */
+    .map-widget-section { padding-bottom: var(--gap-section); }
+
+    #pulse-map {
+      width: 100%;
+      height: 360px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin: 0 var(--page-px);
+      width: calc(100% - var(--page-px) * 2);
+    }
+
+    .map-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .map-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+    .map-legend-item span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Pulsing map markers */
+    .pulse-marker {
+      position: relative;
+      width: 14px;
+      height: 14px;
+    }
+    .pulse-core {
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+    }
+    .pulse-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid;
+      animation: ring-out 2s ease-out infinite;
+      opacity: 0;
+    }
+    .pulse-ring:last-child {
+      animation-delay: 0.8s;
+    }
+    @keyframes ring-out {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* Mapbox popup overrides */
+    .mapboxgl-popup-content {
+      font-family: var(--font-body) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 12px 14px !important;
+      box-shadow: var(--shadow-sheet) !important;
+      min-width: 160px;
+    }
+    .mapboxgl-popup-tip { display: none !important; }
+    .mapboxgl-popup-close-button {
+      font-size: 16px !important;
+      color: var(--text-muted) !important;
+      right: 6px !important;
+      top: 4px !important;
+    }
+    .map-popup-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      color: #1A1A1A;
+      margin-bottom: 3px;
+    }
+    .map-popup-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 100px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .map-popup-desc {
+      font-size: 11px;
+      color: #6B6B6B;
+      line-height: 1.5;
+    }
+
+    @media (min-width: 768px) {
+      #pulse-map { height: 440px; margin: 0 48px; width: calc(100% - 96px); }
+    }
+    @media (min-width: 1024px) {
+      #pulse-map { margin: 0 64px; width: calc(100% - 128px); }
+    }
   </style>
 </head>
 <body>
@@ -1552,6 +1657,24 @@
       </div>
       <hr class="divider">
       <div class="scroll-row" id="food-row"></div>
+    </div>
+
+    <!-- ── MAP WIDGET ── -->
+    <div class="section map-widget-section">
+      <div class="section-header">
+        <div>
+          <p style="font-family:var(--font-body);font-size:10px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:3px;margin-bottom:4px">Our neighborhood</p>
+          <h2 class="section-title">On the map, right now</h2>
+        </div>
+        <div class="map-legend">
+          <div class="map-legend-item"><span style="background:#C0392B"></span>Corners</div>
+          <div class="map-legend-item"><span style="background:#1BAAB0"></span>Open</div>
+          <div class="map-legend-item"><span style="background:#C2527A"></span>Events</div>
+          <div class="map-legend-item"><span style="background:#E8756A"></span>Partners</div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div id="pulse-map"></div>
     </div>
 
     <!-- ── OUR CORNERS ── -->
@@ -2415,6 +2538,90 @@
       if (window.location.hash.startsWith('#corner/')) showPage('corners');
     });
 
+    // ── PULSE MAP ────────────────────────────────────────────────────────────
+
+    const MAPBOX_TOKEN = 'pk.eyJ1Ijoia2F0ZWh1ZXpvIiwiYSI6ImNtcDh3NGI3aTBod2QycG' +
+      'BvZDU1YXFpcmUifQ.vgNqOM0dmMRV0LQNaZ1Ryw';
+
+    const mapSpots = [
+      // Corners
+      { type: 'corner',   lat: 37.7809, lng: -122.4120, name: 'The Glow Corner',         desc: 'Market & 7th · Blacklight art, Saturdays noon' },
+      { type: 'corner',   lat: 37.7798, lng: -122.4155, name: 'Garden Corner',            desc: 'Market & 9th · Community garden, Saturdays noon' },
+      { type: 'corner',   lat: 37.7816, lng: -122.4103, name: 'Chalk Corner',             desc: 'Market & 6th · Kids chalk art, Saturdays noon' },
+      { type: 'corner',   lat: 37.7822, lng: -122.4090, name: 'Lego Corner',              desc: 'Market & 5th · Collaborative Lego builds' },
+      { type: 'corner',   lat: 37.7791, lng: -122.4168, name: 'Rubix Corner',             desc: 'Market & 10th · Speed cubing meetups' },
+      { type: 'corner',   lat: 37.7804, lng: -122.4178, name: 'Architecture Corner',      desc: 'Market & Van Ness · Urban design sketching' },
+      { type: 'corner',   lat: 37.7785, lng: -122.4142, name: 'Pac-Man Pole Corner',      desc: 'Market & 8th · Painted pole, game trivia' },
+      // Open businesses
+      { type: 'business', lat: 37.7803, lng: -122.4131, name: 'Bubbles Bakery',           desc: 'Open until 9pm · Boba & pastries' },
+      { type: 'business', lat: 37.7813, lng: -122.4108, name: 'Jon\'s Bar',               desc: 'Open · Every decade of Market St in a pour' },
+      { type: 'business', lat: 37.7795, lng: -122.4160, name: 'The Noodle House',         desc: 'Open until 10pm · Authentic broth since 2019' },
+      // Events
+      { type: 'event',    lat: 37.7800, lng: -122.4145, name: 'Jazz at The Chapel',       desc: 'Tonight 7pm · Live music, tickets $20' },
+      { type: 'event',    lat: 37.7820, lng: -122.4098, name: 'Street Art Walk',          desc: 'Today 3pm · Free, guided by Urban Alchemy' },
+      // Partners
+      { type: 'partner',  lat: 37.7807, lng: -122.4135, name: 'BLICK Art Materials',      desc: 'Founding partner · Corner activation kits' },
+      { type: 'partner',  lat: 37.7793, lng: -122.4152, name: 'Mid-Market Foundation',    desc: 'Founding partner · Community grants' },
+    ];
+
+    const typeColors  = { corner: '#C0392B', business: '#1BAAB0', event: '#C2527A', partner: '#E8756A' };
+    const typeLabels  = { corner: 'Corner', business: 'Open now', event: 'Event', partner: 'Partner' };
+    const typeDelays  = { corner: '0s', business: '0.3s', event: '0.6s', partner: '0.9s' };
+
+    function initPulseMap() {
+      if (!window.mapboxgl) return;
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+
+      const map = new mapboxgl.Map({
+        container: 'pulse-map',
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [-122.4138, 37.7786],
+        zoom: 15,
+        attributionControl: false,
+        interactive: true,
+      });
+
+      map.addControl(new mapboxgl.AttributionControl({ compact: true }));
+      map.scrollZoom.disable();
+      map.on('load', () => {
+        mapSpots.forEach(spot => {
+          const color  = typeColors[spot.type];
+          const delay  = typeDelays[spot.type];
+
+          const el = document.createElement('div');
+          el.className = 'pulse-marker';
+
+          const ring1 = document.createElement('div');
+          ring1.className = 'pulse-ring';
+          ring1.style.cssText = `border-color:${color};animation-delay:${delay}`;
+
+          const ring2 = document.createElement('div');
+          ring2.className = 'pulse-ring';
+          ring2.style.cssText = `border-color:${color};animation-delay:calc(${delay} + 0.8s)`;
+
+          const core = document.createElement('div');
+          core.className = 'pulse-core';
+          core.style.background = color;
+
+          el.appendChild(ring1);
+          el.appendChild(ring2);
+          el.appendChild(core);
+
+          const popup = new mapboxgl.Popup({ offset: 16, closeButton: true, maxWidth: '220px' })
+            .setHTML(`
+              <div class="map-popup-name">${spot.name}</div>
+              <span class="map-popup-badge" style="background:${color}">${typeLabels[spot.type]}</span>
+              <div class="map-popup-desc">${spot.desc}</div>
+            `);
+
+          new mapboxgl.Marker({ element: el, anchor: 'center' })
+            .setLngLat([spot.lng, spot.lat])
+            .setPopup(popup)
+            .addTo(map);
+        });
+      });
+    }
+
     // ── INIT ─────────────────────────────────────────────────────────────────
 
     renderPentagon();
@@ -2422,6 +2629,7 @@
     renderCorners();
     renderStories();
     renderFounders();
+    initPulseMap();
   </script>
 </body>
 </html>
