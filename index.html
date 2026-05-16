@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Pulse — Mid-Market SF</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -400,7 +400,7 @@
       border-radius: var(--radius-sm);
       padding: 10px 12px;
       min-width: 120px;
-      flex-shrink: 0;
+      flex: 0 0 auto;
       cursor: pointer;
       transition: border-color 0.2s, transform 0.1s;
       user-select: none;
@@ -432,7 +432,7 @@
     /* ── CORNER CARDS ── */
     .corner-card {
       width: 200px;
-      flex-shrink: 0;
+      flex: 0 0 200px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
       background: var(--surface);
@@ -547,7 +547,7 @@
     /* ── STORY CARDS ── */
     .story-card {
       width: 260px;
-      flex-shrink: 0;
+      flex: 0 0 260px;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
       background: var(--surface);
@@ -769,6 +769,116 @@
     .sheet-body p { margin-bottom: 14px; }
     .sheet-body p:last-child { margin-bottom: 0; }
 
+    /* ── TOP NAV (desktop) ── */
+    .top-nav {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(242,232,213,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .top-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 60px;
+      gap: 24px;
+    }
+
+    .top-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .top-nav-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--text-primary);
+    }
+
+    .top-nav-sub {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-muted);
+      padding-top: 2px;
+    }
+
+    .top-nav-links { display: flex; gap: 2px; }
+
+    .top-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+
+    .top-nav-item:hover  { background: rgba(26,26,26,0.06); }
+    .top-nav-item.active { color: var(--calypso); background: rgba(27,170,176,0.08); }
+
+    /* ── RESPONSIVE ── */
+    @media (min-width: 768px) {
+      .top-nav   { display: block; }
+      .bottom-nav { display: none; }
+
+      .app { max-width: 1200px; padding-bottom: 56px; }
+
+      .hero { padding: 60px 48px 52px; }
+      .hero-title { font-size: clamp(56px, 7vw, 96px); }
+      .live-badge { top: 64px; right: 48px; }
+
+      .stats-section { padding: 44px 48px 0; }
+      .stats-grid    { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+      .activity-section { padding: 32px 48px 0; }
+
+      .section-header { padding: 0 48px; }
+      .divider        { margin-left: 48px; margin-right: 48px; }
+
+      .scroll-row {
+        flex-wrap: wrap;
+        overflow-x: visible;
+        padding: 4px 48px 16px;
+        gap: 16px;
+      }
+
+      .food-chip   { flex: 1 1 140px; max-width: 210px; }
+      .corner-card { width: auto; flex: 1 1 200px; max-width: 240px; }
+      .story-card  { width: auto; flex: 1 1 270px; max-width: 360px; }
+
+      .food-name { white-space: normal; }
+
+      .founders-grid { grid-template-columns: repeat(5, 1fr); padding: 0 48px; gap: 16px; }
+    }
+
+    @media (min-width: 1100px) {
+      .top-nav-inner { padding: 0 64px; }
+      .hero           { padding: 72px 64px 60px; }
+      .live-badge     { right: 64px; top: 76px; }
+      .stats-section  { padding: 52px 64px 0; }
+      .activity-section { padding: 36px 64px 0; }
+      .section-header { padding: 0 64px; }
+      .divider        { margin-left: 64px; margin-right: 64px; }
+      .scroll-row     { padding: 4px 64px 16px; }
+      .founders-grid  { padding: 0 64px; }
+    }
+
     /* ── ANIMATIONS ── */
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -782,6 +892,25 @@
   </style>
 </head>
 <body>
+
+  <!-- ── TOP NAV (desktop only) ── -->
+  <nav class="top-nav">
+    <div class="top-nav-inner">
+      <div class="top-nav-brand">
+        <span class="live-dot"></span>
+        <span class="top-nav-title">The Pulse</span>
+        <span class="top-nav-sub">Mid-Market SF</span>
+      </div>
+      <div class="top-nav-links">
+        <div class="top-nav-item active">⚡ Pulse</div>
+        <div class="top-nav-item">📍 Map</div>
+        <div class="top-nav-item">📸 Corners</div>
+        <div class="top-nav-item">📅 Events</div>
+        <div class="top-nav-item">👤 Me</div>
+      </div>
+    </div>
+  </nav>
+
   <div class="app">
 
     <!-- ── HERO ── -->
