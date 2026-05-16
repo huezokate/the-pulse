@@ -286,7 +286,7 @@
 
     .widget-label {
       font-family: var(--font-body);
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 500;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -301,7 +301,7 @@
       display: flex;
       justify-content: space-between;
       font-family: var(--font-body);
-      font-size: 10px;
+      font-size: 14px;
       color: var(--text-secondary);
       margin-bottom: 4px;
     }
@@ -333,13 +333,13 @@
 
     .club-name {
       font-family: var(--font-body);
-      font-size: 11px;
+      font-size: 14px;
       color: var(--text-primary);
     }
 
     .club-badge {
       font-family: var(--font-body);
-      font-size: 9px;
+      font-size: 12px;
       font-weight: 500;
       padding: 2px 7px;
       border-radius: var(--radius-pill);
@@ -1209,6 +1209,94 @@
     .top-nav-item:hover  { background: rgba(26,26,26,0.06); }
     .top-nav-item.active { color: var(--calypso); background: rgba(27,170,176,0.08); }
 
+    .top-nav-qr-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 7px 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.2s, background-color 0.38s ease;
+      white-space: nowrap;
+    }
+
+    .top-nav-qr-btn:hover { border-color: var(--calypso); }
+
+    /* QR modal */
+    .qr-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,26,0.55);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-modal-overlay.open { display: flex; }
+
+    .qr-modal {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      text-align: center;
+      max-width: 280px;
+      width: 90%;
+      animation: slideUp 0.25s ease;
+      position: relative;
+    }
+
+    .qr-modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface-tint);
+      cursor: pointer;
+      font-size: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary);
+    }
+
+    .qr-modal-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .qr-modal-sub {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .qr-modal-img {
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin: 0 auto 12px;
+      display: block;
+    }
+
+    .qr-modal-url {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
     /* ── RESPONSIVE ── */
     @media (min-width: 768px) {
       .top-nav   { display: block; }
@@ -1216,14 +1304,17 @@
 
       .app { max-width: 1200px; padding-bottom: 56px; }
 
-      .hero { padding: 60px 48px 52px; }
-      .hero-title { font-size: clamp(56px, 7vw, 96px); }
-      .live-badge { top: 64px; right: 48px; }
+      .hero { padding: 40px 48px 36px; }
+      .hero-title { font-size: clamp(40px, 5vw, 64px); }
+      .hero-title br { display: none; }
+      .live-badge { top: 44px; right: 48px; }
 
-      .stats-section { padding: 44px 48px 0; }
+      .stats-section { padding: 36px 48px 0; }
       .stats-grid    { grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
-      .activity-section { padding: 32px 48px 0; }
+      .activity-section { padding: 28px 48px 0; }
+      .activity-row { grid-template-columns: 240px 1fr; }
+      .widgets-col  { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-md); }
 
       .section-header { padding: 0 48px; }
       .divider        { margin-left: 48px; margin-right: 48px; }
@@ -1245,7 +1336,7 @@
 
       /* Corners page desktop */
       #corners-map { height: 380px; }
-      .corners-page-header { padding: 16px 48px; top: 60px; }
+      .corners-page-header { padding: 14px 48px; top: 60px; }
       .corners-page-list { padding: 32px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
       .submit-app-btn { font-size: 12px; padding: 9px 18px; }
       .app-form-overlay { align-items: center; }
@@ -1265,6 +1356,57 @@
       .corners-page-header { padding: 16px 64px; }
       .corners-page-list { padding: 40px 64px 80px; }
     }
+
+    /* ── NIGHT MODE ── */
+    /* Smooth theme transition on key containers */
+    body, html,
+    .app, .hero, .stats-section, .activity-section, .section,
+    .stat-card, .activity-card, .widget-card,
+    .food-chip, .corner-card, .story-card, .founder-card,
+    .bottom-nav, .top-nav, .sheet, .sheet-close,
+    .toggle-wrap, .toggle-btn, .corner-detail-card,
+    .corners-page-header, .app-form-modal, #page-corners {
+      transition: background-color 0.38s ease, color 0.38s ease,
+                  border-color 0.38s ease, box-shadow 0.38s ease;
+    }
+
+    body.night-mode {
+      --bg:           #0F0D0C;
+      --bg-warm:      #141110;
+      --surface:      #1C1916;
+      --surface-tint: #231F1B;
+
+      --text-primary:   #F2E8D5;
+      --text-secondary: #B09A82;
+      --text-muted:     #6B5D4F;
+
+      --border:      rgba(242, 232, 213, 0.09);
+      --border-warm: rgba(232, 117, 106, 0.18);
+
+      --shadow-card:  0 2px 16px rgba(0, 0, 0, 0.32);
+      --shadow-sheet: 0 -4px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    body.night-mode .bottom-nav {
+      background: rgba(15, 13, 12, 0.95);
+    }
+
+    body.night-mode .top-nav {
+      background: rgba(15, 13, 12, 0.96);
+    }
+
+    body.night-mode .corners-page-header {
+      background: rgba(15, 13, 12, 0.96);
+    }
+
+    body.night-mode .toggle-wrap {
+      background: rgba(242, 232, 213, 0.07);
+    }
+
+    body.night-mode .sheet-overlay    { background: rgba(0, 0, 0, 0.72); }
+    body.night-mode .app-form-overlay  { background: rgba(0, 0, 0, 0.78); }
+    body.night-mode .qr-modal-overlay  { background: rgba(0, 0, 0, 0.72); }
+    body.night-mode .top-nav-qr-btn    { background: var(--surface); }
 
     /* ── ANIMATIONS ── */
     @keyframes pulse-dot {
@@ -1295,6 +1437,9 @@
         <div class="top-nav-item">📅 Events</div>
         <div class="top-nav-item">👤 Me</div>
       </div>
+      <button class="top-nav-qr-btn" onclick="openLocationQR()">
+        <span style="font-size:15px;line-height:1">⬛</span> Scan to explore
+      </button>
     </div>
   </nav>
 
@@ -1474,6 +1619,17 @@
       <div>Me</div>
     </div>
   </nav>
+
+  <!-- ── LOCATION QR MODAL ── -->
+  <div class="qr-modal-overlay" id="location-qr-overlay" onclick="closeLocationQR()">
+    <div class="qr-modal" onclick="event.stopPropagation()">
+      <button class="qr-modal-close" onclick="closeLocationQR()">✕</button>
+      <div class="qr-modal-title">The Pulse</div>
+      <div class="qr-modal-sub">Scan to explore Mid-Market SF —<br>share with neighbors and visitors</div>
+      <img class="qr-modal-img" id="location-qr-img" src="" alt="QR code for The Pulse">
+      <div class="qr-modal-url">huezokate.github.io/the-pulse</div>
+    </div>
+  </div>
 
   <!-- ── APPLICATION FORM ── -->
   <div class="app-form-overlay" id="app-form-overlay">
@@ -1782,7 +1938,7 @@
 
       const svgLabels = labels.map(l =>
         `<text x="${l.x}" y="${l.y}" text-anchor="${l.anchor}" ` +
-        `font-family="'DM Sans',sans-serif" font-size="9" fill="#A0A0A0">${l.text}</text>`
+        `font-family="'DM Sans',sans-serif" font-size="10" fill="#A0A0A0">${l.text}</text>`
       ).join('');
 
       document.getElementById('pentagon-wrap').innerHTML =
@@ -1801,6 +1957,7 @@
 
     function setMode(mode) {
       isNight = mode === 'night';
+      document.body.classList.toggle('night-mode', isNight);
       document.getElementById('btn-day').classList.toggle('active', !isNight);
       document.getElementById('btn-night').classList.toggle('active', isNight);
 
@@ -2059,6 +2216,21 @@
           ['Contact',          'hello@minds-shift.com']
         ])
       );
+    }
+
+    // ── LOCATION QR ──────────────────────────────────────────────────────────
+
+    function openLocationQR() {
+      const url = 'https://huezokate.github.io/the-pulse/';
+      const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}&color=1A1A1A&bgcolor=FFFFFF&margin=10`;
+      document.getElementById('location-qr-img').src = qrSrc;
+      document.getElementById('location-qr-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLocationQR() {
+      document.getElementById('location-qr-overlay').classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     // ── PAGE NAVIGATION ──────────────────────────────────────────────────────
