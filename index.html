@@ -992,61 +992,6 @@
     }
 
     /* ── APPLICATION FORM ── */
-    .app-form-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(26,26,26,0.6);
-      z-index: 400;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .app-form-overlay.open { display: flex; }
-
-    .app-form-modal {
-      background: var(--surface);
-      border-radius: 20px 20px 0 0;
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: slideUp 0.28s ease;
-    }
-
-    .app-form-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 22px 12px;
-      position: sticky;
-      top: 0;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      z-index: 1;
-    }
-
-    .app-form-title {
-      font-family: var(--font-display);
-      font-size: 20px;
-      color: var(--text-primary);
-    }
-
-    .app-form-close {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface-tint);
-      cursor: pointer;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-    }
-
-    .app-form-body { padding: 16px 22px 36px; }
 
     .form-intro {
       font-family: var(--font-body);
@@ -1142,6 +1087,334 @@
     .form-success-title { font-family: var(--font-display); font-size: 22px; color: var(--text-primary); margin-bottom: 8px; }
     .form-success-body { font-family: var(--font-body); font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
     .form-ref { font-family: var(--font-body); font-size: 11px; color: var(--text-muted); margin-top: 12px; }
+
+    /* ── ADOPT FLOW OVERLAY ── */
+    .adopt-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,26,0.6);
+      z-index: 400;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .adopt-overlay.open { display: flex; }
+
+    .adopt-modal {
+      background: var(--surface);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 600px;
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: slideUp 0.28s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* sticky header inside modal */
+    .adopt-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px 12px;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      z-index: 1;
+      gap: 12px;
+    }
+    .adopt-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .adopt-back-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .adopt-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .adopt-step-indicator {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .adopt-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface-tint);
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .adopt-body { padding: 20px 22px 36px; }
+
+    /* step visibility */
+    .adopt-step { display: none; }
+    .adopt-step.active { display: block; }
+
+    /* ── STEP 1: GUIDELINES ── */
+    .adopt-hero {
+      margin-bottom: 22px;
+    }
+    .adopt-hero-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      color: var(--text-primary);
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .adopt-hero-sub {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .guidelines-section {
+      margin-bottom: 22px;
+    }
+    .guidelines-section-title {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .guideline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .guideline-item:last-child { border-bottom: none; }
+    .guideline-icon {
+      font-size: 15px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .guideline-text strong {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 1px;
+    }
+    .guideline-text span {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .material-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.15s;
+      margin-bottom: 8px;
+      text-decoration: none;
+    }
+    .material-link:hover {
+      border-color: var(--calypso);
+      background: rgba(27,170,176,0.04);
+    }
+    .material-link-icon { font-size: 18px; flex-shrink: 0; }
+    .material-link-text { flex: 1; }
+    .material-link-name {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .material-link-desc {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+    .material-link-arrow { font-size: 11px; color: var(--calypso); }
+
+    .adopt-cta-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--calypso);
+      color: white;
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 6px;
+    }
+    .adopt-cta-btn:hover { opacity: 0.9; }
+    .adopt-cta-btn.secondary {
+      background: transparent;
+      color: var(--calypso);
+      border: 1.5px solid var(--calypso);
+      margin-top: 10px;
+    }
+
+    /* ── STEP 2: FORM note ── */
+    .form-note {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      padding: 11px 14px;
+      background: rgba(27,170,176,0.07);
+      border-left: 3px solid var(--calypso);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 20px;
+    }
+
+    /* ── STEP 3: TIMELINE ── */
+    .adopt-confirm-icon { font-size: 44px; text-align: center; margin-bottom: 10px; }
+    .adopt-confirm-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      color: var(--text-primary);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .adopt-confirm-sub {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .adopt-ref {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--calypso);
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 28px;
+    }
+    .timeline-section-title {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 36px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 20px;
+      bottom: 20px;
+      width: 1.5px;
+      background: var(--border);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      left: -27px;
+      top: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .timeline-dot.done  { background: rgba(27,170,176,0.15); }
+    .timeline-dot.todo  { background: rgba(26,26,26,0.06); border: 1.5px dashed rgba(26,26,26,0.20); }
+    .timeline-dot.alert { background: rgba(232,117,106,0.15); }
+    .timeline-item-title {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+    .timeline-item-sub {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .timeline-deadline {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--soon);
+      background: rgba(232,117,106,0.10);
+      border-radius: 100px;
+      padding: 2px 8px;
+      margin-top: 4px;
+    }
+    .timeline-item-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .timeline-action-chip {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--calypso);
+      background: rgba(27,170,176,0.10);
+      border-radius: 100px;
+      padding: 3px 10px;
+      cursor: pointer;
+      border: none;
+    }
 
     @keyframes slideUp {
       from { transform: translateY(32px); opacity: 0; }
@@ -1341,8 +1614,8 @@
       .corners-page-header { padding: 14px 48px; top: 60px; }
       .corners-page-list { padding: 32px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
       .submit-app-btn { font-size: 12px; padding: 9px 18px; }
-      .app-form-overlay { align-items: center; }
-      .app-form-modal { border-radius: 20px; max-height: 85vh; margin: 24px; }
+      .adopt-overlay { align-items: center; }
+      .adopt-modal { border-radius: 20px; max-height: 88vh; margin: 24px; }
     }
 
     @media (min-width: 1100px) {
@@ -1367,7 +1640,7 @@
     .food-chip, .corner-card, .story-card, .founder-card,
     .bottom-nav, .top-nav, .sheet, .sheet-close,
     .toggle-wrap, .toggle-btn, .corner-detail-card,
-    .corners-page-header, .app-form-modal, #page-corners {
+    .corners-page-header, .adopt-modal, #page-corners {
       transition: background-color 0.38s ease, color 0.38s ease,
                   border-color 0.38s ease, box-shadow 0.38s ease;
     }
@@ -1406,7 +1679,7 @@
     }
 
     body.night-mode .sheet-overlay    { background: rgba(0, 0, 0, 0.72); }
-    body.night-mode .app-form-overlay  { background: rgba(0, 0, 0, 0.78); }
+    body.night-mode .adopt-overlay      { background: rgba(0, 0, 0, 0.78); }
     body.night-mode .qr-modal-overlay  { background: rgba(0, 0, 0, 0.72); }
     body.night-mode .top-nav-qr-btn    { background: var(--surface); }
 
@@ -1713,7 +1986,7 @@
     <div class="corners-page-header">
       <button class="back-btn" onclick="showPage('main')">← The Pulse</button>
       <h1 class="corners-page-title">Our Corners</h1>
-      <button class="submit-app-btn" onclick="openApplicationForm()">+ Submit Application</button>
+      <button class="submit-app-btn" onclick="openAdoptFlow()">Adopt a Corner</button>
     </div>
     <div id="corners-map"></div>
     <div class="corners-page-list" id="corners-page-list"></div>
@@ -1755,15 +2028,121 @@
   </div>
 
   <!-- ── APPLICATION FORM ── -->
-  <div class="app-form-overlay" id="app-form-overlay">
-    <div class="app-form-modal">
-      <div class="app-form-header">
-        <h2 class="app-form-title">Submit Corner Application</h2>
-        <button class="app-form-close" onclick="closeApplicationForm()">✕</button>
+  <!-- ── ADOPT A CORNER — 3-STEP FLOW ── -->
+  <div class="adopt-overlay" id="adopt-overlay">
+    <div class="adopt-modal">
+
+      <!-- HEADER (shared, content swaps per step) -->
+      <div class="adopt-header" id="adopt-header">
+        <div class="adopt-header-left">
+          <button class="adopt-back-btn" id="adopt-back-btn" onclick="adoptBack()" style="display:none">←</button>
+          <h2 class="adopt-title" id="adopt-header-title">Adopt a Corner</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="adopt-step-indicator" id="adopt-step-indicator">Step 1 of 3</span>
+          <button class="adopt-close" onclick="closeAdoptFlow()">✕</button>
+        </div>
       </div>
-      <div class="app-form-body">
-        <div id="form-fields">
-          <p class="form-intro">Propose a new corner on Mid-Market. Approved corners receive a $50/month city maintenance allowance and streamlined permits for group activities — documented and backed by the city.</p>
+
+      <div class="adopt-body">
+
+        <!-- ──────────────────────────────────────────
+             STEP 1 — Community Guidelines & Materials
+             ────────────────────────────────────────── -->
+        <div class="adopt-step active" id="adopt-step-1">
+          <div class="adopt-hero">
+            <div class="adopt-hero-title">Claim a block.<br>Make it yours.</div>
+            <div class="adopt-hero-sub">The Adopt a Corner program lets any resident or group claim a street corner on the Mid-Market corridor. Show up Saturdays at noon, bring your crew, and build something the neighborhood wants to stop at.</div>
+          </div>
+
+          <div class="guidelines-section">
+            <div class="guidelines-section-title">What you're committing to</div>
+            <div class="guideline-item">
+              <div class="guideline-icon">📅</div>
+              <div class="guideline-text"><strong>Show up Saturdays at noon</strong><span>Bring your crew every week and keep the corner active and welcoming.</span></div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">🧹</div>
+              <div class="guideline-text"><strong>Keep it clean and safe</strong><span>The corner is yours — its condition reflects on the whole program.</span></div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">📸</div>
+              <div class="guideline-text"><strong>Document the first 30 days</strong><span>Submit 3+ photos of your setup to The Pulse and the Mid-Market Foundation within 30 days of submission.</span></div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">📋</div>
+              <div class="guideline-text"><strong>File required permits within 30 days</strong><span>Permanent structures, public art, and group gatherings each need city permits. We'll send you the right forms.</span></div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">🤝</div>
+              <div class="guideline-text"><strong>Be a good neighbor</strong><span>Engage the block, respect businesses, and leave the space better than you found it.</span></div>
+            </div>
+          </div>
+
+          <div class="guidelines-section">
+            <div class="guidelines-section-title">What you receive</div>
+            <div class="guideline-item">
+              <div class="guideline-icon">💰</div>
+              <div class="guideline-text"><strong>$50/month maintenance allowance</strong><span>City-backed grant paid monthly once your corner is approved.</span></div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">🎨</div>
+              <div class="guideline-text"><strong>BLICK Art Materials starter kit</strong><span>UV paint, chalk sets, or garden tools — your choice based on corner theme.</span></div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">📑</div>
+              <div class="guideline-text"><strong>Streamlined permit processing</strong><span>The Mid-Market Foundation coordinates with SF DPW on your behalf.</span></div>
+            </div>
+            <div class="guideline-item">
+              <div class="guideline-icon">📍</div>
+              <div class="guideline-text"><strong>Listed on The Pulse</strong><span>Your corner gets its own card, QR code, and map pin on this dashboard.</span></div>
+            </div>
+          </div>
+
+          <div class="guidelines-section">
+            <div class="guidelines-section-title">Helpful materials to get started</div>
+            <a class="material-link" href="#" onclick="return false">
+              <div class="material-link-icon">📋</div>
+              <div class="material-link-text">
+                <div class="material-link-name">Corner Activation Guide</div>
+                <div class="material-link-desc">Step-by-step playbook for your first 30 days — MMBA</div>
+              </div>
+              <div class="material-link-arrow">↗</div>
+            </a>
+            <a class="material-link" href="#" onclick="return false">
+              <div class="material-link-icon">🎨</div>
+              <div class="material-link-text">
+                <div class="material-link-name">BLICK Starter Kit Catalog</div>
+                <div class="material-link-desc">Browse the supplies included in your activation kit</div>
+              </div>
+              <div class="material-link-arrow">↗</div>
+            </a>
+            <a class="material-link" href="#" onclick="return false">
+              <div class="material-link-icon">🏛</div>
+              <div class="material-link-text">
+                <div class="material-link-name">SF DPW Permit Guide</div>
+                <div class="material-link-desc">What permits apply to your corner and how to file them</div>
+              </div>
+              <div class="material-link-arrow">↗</div>
+            </a>
+            <a class="material-link" href="#" onclick="return false">
+              <div class="material-link-icon">📸</div>
+              <div class="material-link-text">
+                <div class="material-link-name">Photo Submission Guidelines</div>
+                <div class="material-link-desc">What to document and how to submit your corner photos</div>
+              </div>
+              <div class="material-link-arrow">↗</div>
+            </a>
+          </div>
+
+          <button class="adopt-cta-btn" onclick="adoptGoStep(2)">I understand — Start Application →</button>
+        </div>
+
+        <!-- ──────────────────────────────────────────
+             STEP 2 — Preliminary Application Form
+             ────────────────────────────────────────── -->
+        <div class="adopt-step" id="adopt-step-2">
+          <div class="form-note">This is a <strong>preliminary application</strong>. Once submitted, it goes to Civic Center and the Mid-Market Foundation. You'll have <strong>30 days</strong> to activate your corner, submit photos, and file permits before final review.</div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Corner location *</label>
@@ -1774,40 +2153,30 @@
               <input class="form-input" type="text" placeholder="Full name">
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Community group</label>
-              <input class="form-input" type="text" placeholder="Group name (optional)">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Permit type needed</label>
-              <select class="form-select">
-                <option>Public art installation</option>
-                <option>Group gathering (≤25)</option>
-                <option>Group gathering (26–100)</option>
-                <option>Permanent structure</option>
-                <option>Temporary activation</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label class="form-label">Community group or crew name</label>
+            <input class="form-input" type="text" placeholder="What do you call yourselves? (optional)">
           </div>
           <div class="form-group">
             <label class="form-label">Corner concept *</label>
-            <textarea class="form-textarea" placeholder="Describe what your corner will become — theme, activities, materials, visual style..."></textarea>
+            <textarea class="form-textarea" placeholder="What will your corner become? Describe the theme, activities, and visual style..."></textarea>
           </div>
           <div class="form-group">
             <label class="form-label">Why this location?</label>
-            <textarea class="form-textarea" placeholder="What makes this block worth activating? What problem does it solve for the neighborhood?"></textarea>
+            <textarea class="form-textarea" placeholder="What makes this block worth activating?"></textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Leaders &amp; team committed to showing up</label>
-            <textarea class="form-textarea" placeholder="Name, role, and contact for each person (minimum 2 people required)..."></textarea>
+            <label class="form-label">Permit type you'll need</label>
+            <select class="form-select">
+              <option>Public art installation</option>
+              <option>Group gathering (≤25 people)</option>
+              <option>Group gathering (26–100 people)</option>
+              <option>Permanent structure</option>
+              <option>Temporary activation (no permit needed)</option>
+            </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Estimated monthly budget</label>
-            <input class="form-input" type="text" placeholder="How will the $50/month go toward the corner?">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Upload sketches or photos</label>
+            <label class="form-label">Upload sketches or initial concept</label>
             <div class="file-drop-area">
               <input type="file" multiple accept="image/*,.pdf">
               <div class="file-drop-icon">📎</div>
@@ -1818,17 +2187,68 @@
             <label class="form-label">Contact email *</label>
             <input class="form-input" type="email" placeholder="you@example.com">
           </div>
-          <button class="form-submit-btn" onclick="submitApplication()">Submit to City &amp; Mid-Market Foundation →</button>
+          <button class="adopt-cta-btn" onclick="submitAdoptApplication()">Submit to Civic Center →</button>
         </div>
-        <div class="form-success" id="form-success">
-          <div class="form-success-icon">🏙</div>
-          <div class="form-success-title">Application submitted!</div>
-          <div class="form-success-body">Your corner proposal has been forwarded to the Mid-Market Foundation and the SF City Planning Office. You'll receive an email within 5 business days with next steps, permit details, and your BLICK starter kit information.</div>
-          <div class="form-ref" id="form-ref-num"></div>
+
+        <!-- ──────────────────────────────────────────
+             STEP 3 — Confirmation & Timeline
+             ────────────────────────────────────────── -->
+        <div class="adopt-step" id="adopt-step-3">
+          <div class="adopt-confirm-icon">🏙</div>
+          <div class="adopt-confirm-title">Submitted to Civic Center</div>
+          <div class="adopt-confirm-sub">Your preliminary application is on its way to the Mid-Market Foundation and SF Civic Center.</div>
+          <div class="adopt-ref" id="adopt-ref-num"></div>
+
+          <div class="timeline-section-title">What happens next</div>
+          <div class="timeline">
+
+            <div class="timeline-item">
+              <div class="timeline-dot done">✅</div>
+              <div class="timeline-item-title">Application received</div>
+              <div class="timeline-item-sub">Your preliminary application is with the Mid-Market Foundation and SF Civic Center. Check your email for confirmation.</div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot alert">📅</div>
+              <div class="timeline-item-title">Activate your corner</div>
+              <div class="timeline-item-sub">Set up your space, get your crew out on a Saturday, and start documenting. You need at least 3 photos showing the corner active and in use.</div>
+              <div class="timeline-deadline">30-day window from today</div>
+              <div class="timeline-item-actions">
+                <button class="timeline-action-chip">📸 Photo guidelines →</button>
+                <button class="timeline-action-chip">📅 Add to calendar</button>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot todo">📋</div>
+              <div class="timeline-item-title">File your permits</div>
+              <div class="timeline-item-sub">The Foundation will email you the specific permit forms for your corner type. File with SF DPW within the 30-day window — they'll coordinate on your behalf.</div>
+              <div class="timeline-item-actions">
+                <button class="timeline-action-chip">📑 SF DPW permit guide →</button>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot todo">🔄</div>
+              <div class="timeline-item-title">City review</div>
+              <div class="timeline-item-sub">Once your photos and permits are filed, SF City Planning reviews your activation. Typical turnaround is 5–10 business days.</div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot todo">🎉</div>
+              <div class="timeline-item-title">Approval — you're official</div>
+              <div class="timeline-item-sub">Your corner goes live on The Pulse with its own card and QR code. Your $50/month allowance begins, and your BLICK starter kit ships within 5 business days.</div>
+            </div>
+
+          </div>
+
+          <button class="adopt-cta-btn" style="margin-top:28px" onclick="closeAdoptFlow()">Done — back to Our Corners</button>
+          <button class="adopt-cta-btn secondary" onclick="closeAdoptFlow()">Save reference &amp; share</button>
         </div>
-      </div>
-    </div>
-  </div>
+
+      </div><!-- /adopt-body -->
+    </div><!-- /adopt-modal -->
+  </div><!-- /adopt-overlay -->
 
   <!-- ── BOTTOM SHEET ── -->
   <div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
@@ -2503,24 +2923,47 @@
 
     // ── APPLICATION FORM ──────────────────────────────────────────────────────
 
-    function openApplicationForm() {
-      document.getElementById('app-form-overlay').classList.add('open');
+    // ── ADOPT A CORNER — 3-STEP FLOW ─────────────────────────────
+    let adoptCurrentStep = 1;
+    const ADOPT_TITLES = { 1: 'Adopt a Corner', 2: 'Preliminary Application', 3: 'Submitted!' };
+
+    function openAdoptFlow() {
+      adoptGoStep(1);
+      document.getElementById('adopt-overlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
 
-    function closeApplicationForm() {
-      document.getElementById('app-form-overlay').classList.remove('open');
-      document.getElementById('form-fields').style.display = '';
-      document.getElementById('form-success').classList.remove('show');
+    function closeAdoptFlow() {
+      document.getElementById('adopt-overlay').classList.remove('open');
       document.body.style.overflow = '';
+      setTimeout(() => adoptGoStep(1), 300);
     }
 
-    function submitApplication() {
-      const ref = '#MM-' + Math.floor(10000 + Math.random() * 90000);
-      document.getElementById('form-fields').style.display = 'none';
-      const success = document.getElementById('form-success');
-      document.getElementById('form-ref-num').textContent = 'Reference: ' + ref;
-      success.classList.add('show');
+    function adoptGoStep(n) {
+      // hide all steps
+      document.querySelectorAll('.adopt-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('adopt-step-' + n).classList.add('active');
+
+      // update header
+      document.getElementById('adopt-header-title').textContent = ADOPT_TITLES[n];
+      document.getElementById('adopt-step-indicator').textContent = 'Step ' + n + ' of 3';
+      document.getElementById('adopt-back-btn').style.display = n > 1 && n < 3 ? 'flex' : 'none';
+
+      // scroll modal to top
+      const modal = document.querySelector('.adopt-modal');
+      if (modal) modal.scrollTop = 0;
+
+      adoptCurrentStep = n;
+    }
+
+    function adoptBack() {
+      if (adoptCurrentStep > 1) adoptGoStep(adoptCurrentStep - 1);
+    }
+
+    function submitAdoptApplication() {
+      const ref = 'MM-' + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('adopt-ref-num').textContent = 'Reference #' + ref;
+      adoptGoStep(3);
     }
 
     // ── NAV CLICK HANDLERS ────────────────────────────────────────────────────
