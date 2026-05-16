@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -769,6 +771,381 @@
     .sheet-body p { margin-bottom: 14px; }
     .sheet-body p:last-child { margin-bottom: 0; }
 
+    /* ── CORNERS PAGE ── */
+    #page-corners { background: var(--bg); min-height: 100vh; }
+
+    .corners-page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px var(--page-px);
+      background: rgba(242,232,213,0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .back-btn {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--calypso);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .corners-page-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .submit-app-btn {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--surface);
+      background: var(--calypso);
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 8px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+
+    .submit-app-btn:hover { opacity: 0.88; }
+
+    #corners-map {
+      height: 260px;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .corners-page-list {
+      padding: 24px var(--page-px) 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── CORNER DETAIL CARD ── */
+    .corner-detail-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    /* ── CAROUSEL ── */
+    .carousel-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #111;
+      aspect-ratio: 16/9;
+    }
+
+    .carousel-inner {
+      display: flex;
+      height: 100%;
+      transition: transform 0.35s ease;
+      will-change: transform;
+    }
+
+    .carousel-slide {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .car-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      background: rgba(255,255,255,0.88);
+      border: none;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      color: var(--text-primary);
+      z-index: 2;
+      transition: opacity 0.2s;
+    }
+
+    .car-btn:hover { opacity: 0.8; }
+    .car-prev { left: 8px; }
+    .car-next { right: 8px; }
+    .car-btn.hidden { display: none; }
+
+    .car-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .car-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .car-dot.active { background: white; transform: scale(1.3); }
+
+    /* ── CORNER DETAIL INFO ── */
+    .corner-detail-info { padding: 16px 18px 18px; }
+
+    .corner-detail-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .corner-detail-name {
+      font-family: var(--font-display);
+      font-size: 19px;
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+
+    .corner-detail-cross {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+    }
+
+    .corner-qr { text-align: center; flex-shrink: 0; }
+    .corner-qr img { width: 72px; height: 72px; border-radius: 8px; border: 1px solid var(--border); }
+    .corner-qr-label {
+      font-family: var(--font-body);
+      font-size: 8px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .corner-detail-story {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin: 10px 0 12px;
+    }
+
+    .corner-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-item {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .meta-item strong {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-primary);
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 2px;
+    }
+
+    /* ── APPLICATION FORM ── */
+    .app-form-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,26,0.6);
+      z-index: 400;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .app-form-overlay.open { display: flex; }
+
+    .app-form-modal {
+      background: var(--surface);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.28s ease;
+    }
+
+    .app-form-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 22px 12px;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      z-index: 1;
+    }
+
+    .app-form-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--text-primary);
+    }
+
+    .app-form-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface-tint);
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+    }
+
+    .app-form-body { padding: 16px 22px 36px; }
+
+    .form-intro {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      padding: 12px 14px;
+      background: rgba(27,170,176,0.07);
+      border-left: 3px solid var(--calypso);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 20px;
+    }
+
+    .form-group { margin-bottom: 14px; }
+
+    .form-label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--surface-tint);
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--calypso);
+      background: var(--surface);
+    }
+
+    .form-textarea { min-height: 72px; resize: vertical; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .file-drop-area {
+      border: 1.5px dashed rgba(26,26,26,0.20);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .file-drop-area:hover {
+      border-color: var(--calypso);
+      background: rgba(27,170,176,0.04);
+    }
+
+    .file-drop-area input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-drop-icon { font-size: 22px; margin-bottom: 5px; }
+    .file-drop-text { font-family: var(--font-body); font-size: 11px; color: var(--text-muted); }
+
+    .form-submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--calypso);
+      color: white;
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: opacity 0.2s;
+    }
+
+    .form-submit-btn:hover { opacity: 0.9; }
+
+    .form-success { display: none; text-align: center; padding: 40px 22px 48px; }
+    .form-success.show { display: block; }
+    .form-success-icon { font-size: 48px; margin-bottom: 14px; }
+    .form-success-title { font-family: var(--font-display); font-size: 22px; color: var(--text-primary); margin-bottom: 8px; }
+    .form-success-body { font-family: var(--font-body); font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .form-ref { font-family: var(--font-body); font-size: 11px; color: var(--text-muted); margin-top: 12px; }
+
+    @keyframes slideUp {
+      from { transform: translateY(32px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
     /* ── TOP NAV (desktop) ── */
     .top-nav {
       display: none;
@@ -865,6 +1242,14 @@
       .food-name { white-space: normal; }
 
       .founders-grid { grid-template-columns: repeat(5, 1fr); padding: 0 48px; gap: 16px; }
+
+      /* Corners page desktop */
+      #corners-map { height: 380px; }
+      .corners-page-header { padding: 16px 48px; top: 60px; }
+      .corners-page-list { padding: 32px 48px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+      .submit-app-btn { font-size: 12px; padding: 9px 18px; }
+      .app-form-overlay { align-items: center; }
+      .app-form-modal { border-radius: 20px; max-height: 85vh; margin: 24px; }
     }
 
     @media (min-width: 1100px) {
@@ -877,6 +1262,8 @@
       .divider        { margin-left: 64px; margin-right: 64px; }
       .scroll-row     { padding: 4px 64px 16px; }
       .founders-grid  { padding: 0 64px; }
+      .corners-page-header { padding: 16px 64px; }
+      .corners-page-list { padding: 40px 64px 80px; }
     }
 
     /* ── ANIMATIONS ── */
@@ -911,6 +1298,7 @@
     </div>
   </nav>
 
+  <div id="page-main">
   <div class="app">
 
     <!-- ── HERO ── -->
@@ -1025,7 +1413,7 @@
     <div class="section" style="padding-bottom:var(--gap-section)">
       <div class="section-header">
         <h2 class="section-title">Our Corners</h2>
-        <span class="section-cta" onclick="openAdoptSheet()">Adopt a corner →</span>
+        <span class="section-cta" onclick="showPage('corners')">See all corners →</span>
       </div>
       <hr class="divider">
       <div class="scroll-row" id="corners-row"></div>
@@ -1050,6 +1438,18 @@
     </div>
 
   </div><!-- /.app -->
+  </div><!-- /#page-main -->
+
+  <!-- ── CORNERS PAGE ── -->
+  <div id="page-corners" style="display:none">
+    <div class="corners-page-header">
+      <button class="back-btn" onclick="showPage('main')">← The Pulse</button>
+      <h1 class="corners-page-title">Our Corners</h1>
+      <button class="submit-app-btn" onclick="openApplicationForm()">+ Submit Application</button>
+    </div>
+    <div id="corners-map"></div>
+    <div class="corners-page-list" id="corners-page-list"></div>
+  </div>
 
   <!-- ── BOTTOM NAV ── -->
   <nav class="bottom-nav">
@@ -1074,6 +1474,82 @@
       <div>Me</div>
     </div>
   </nav>
+
+  <!-- ── APPLICATION FORM ── -->
+  <div class="app-form-overlay" id="app-form-overlay">
+    <div class="app-form-modal">
+      <div class="app-form-header">
+        <h2 class="app-form-title">Submit Corner Application</h2>
+        <button class="app-form-close" onclick="closeApplicationForm()">✕</button>
+      </div>
+      <div class="app-form-body">
+        <div id="form-fields">
+          <p class="form-intro">Propose a new corner on Mid-Market. Approved corners receive a $50/month city maintenance allowance and streamlined permits for group activities — documented and backed by the city.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Corner location *</label>
+              <input class="form-input" type="text" placeholder="Market & ???">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your name *</label>
+              <input class="form-input" type="text" placeholder="Full name">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Community group</label>
+              <input class="form-input" type="text" placeholder="Group name (optional)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Permit type needed</label>
+              <select class="form-select">
+                <option>Public art installation</option>
+                <option>Group gathering (≤25)</option>
+                <option>Group gathering (26–100)</option>
+                <option>Permanent structure</option>
+                <option>Temporary activation</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Corner concept *</label>
+            <textarea class="form-textarea" placeholder="Describe what your corner will become — theme, activities, materials, visual style..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Why this location?</label>
+            <textarea class="form-textarea" placeholder="What makes this block worth activating? What problem does it solve for the neighborhood?"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Leaders &amp; team committed to showing up</label>
+            <textarea class="form-textarea" placeholder="Name, role, and contact for each person (minimum 2 people required)..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated monthly budget</label>
+            <input class="form-input" type="text" placeholder="How will the $50/month go toward the corner?">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Upload sketches or photos</label>
+            <div class="file-drop-area">
+              <input type="file" multiple accept="image/*,.pdf">
+              <div class="file-drop-icon">📎</div>
+              <div class="file-drop-text">Drop files here or tap to browse<br>Images or PDF — up to 10 files</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact email *</label>
+            <input class="form-input" type="email" placeholder="you@example.com">
+          </div>
+          <button class="form-submit-btn" onclick="submitApplication()">Submit to City &amp; Mid-Market Foundation →</button>
+        </div>
+        <div class="form-success" id="form-success">
+          <div class="form-success-icon">🏙</div>
+          <div class="form-success-title">Application submitted!</div>
+          <div class="form-success-body">Your corner proposal has been forwarded to the Mid-Market Foundation and the SF City Planning Office. You'll receive an email within 5 business days with next steps, permit details, and your BLICK starter kit information.</div>
+          <div class="form-ref" id="form-ref-num"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ── BOTTOM SHEET ── -->
   <div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
@@ -1132,31 +1608,74 @@
 
     const corners = [
       {
-        id: 'glow-corner',
-        name: 'The Glow Corner', cross: 'Market & 7th',
-        theme: 'glow', tagLabel: 'Blacklight Art', tagEmoji: '🌟',
+        id: 'glow-corner', name: 'The Glow Corner', cross: 'Market & 7th',
+        theme: 'glow', themeColor: '#B44FFF', tagLabel: 'Blacklight Art', tagEmoji: '🌟',
         crewSize: 8, meetupDay: 'Saturday', meetupTime: '12pm',
-        ugcCount: 47, bestTime: 'After 8pm',
-        ugcPrompt: 'Share your glow photo',
+        ugcCount: 47, bestTime: 'After 8pm', ugcPrompt: 'Share your glow photo',
+        images: ['images/glow-corner.jpeg'],
+        leaders: ['Marcus T.', 'Jade R.'],
+        lat: 37.7809, lng: -122.4120,
         story: "Team Glow claims the corner every Saturday with UV paint, glow tape, and whatever they can haul from BLICK. After dark, it stops traffic. Wear white — it'll catch the light."
       },
       {
-        id: 'garden-corner',
-        name: 'Garden Corner', cross: 'Market & 9th',
-        theme: 'plants', tagLabel: 'Community Garden', tagEmoji: '🌿',
+        id: 'garden-corner', name: 'Garden Corner', cross: 'Market & 9th',
+        theme: 'plants', themeColor: '#2DB870', tagLabel: 'Community Garden', tagEmoji: '🌿',
         crewSize: 12, meetupDay: 'Saturday', meetupTime: '12pm',
-        ugcCount: 31, bestTime: 'Weekend mornings',
-        ugcPrompt: 'Show what you planted',
+        ugcCount: 31, bestTime: 'Weekend mornings', ugcPrompt: 'Show what you planted',
+        images: ['images/garden-corner-1.jpeg', 'images/garden-corner-2.jpeg'],
+        leaders: ['Ximena R.', 'Carol M.', 'Yuki T.'],
+        lat: 37.7799, lng: -122.4145,
         story: "Twelve neighbors show up every Saturday to tend the planter boxes along Market & 9th. Herbs, native flowers, the occasional tomato. Bring seeds, take cuttings — the corner is for everyone."
       },
       {
-        id: 'chalk-corner',
-        name: 'Chalk Corner', cross: 'Market & 6th',
-        theme: 'kids', tagLabel: 'Chalk Art', tagEmoji: '🎨',
+        id: 'chalk-corner', name: 'Chalk Corner', cross: 'Market & 6th',
+        theme: 'kids', themeColor: '#E8A83E', tagLabel: 'Chalk Art', tagEmoji: '🎨',
         crewSize: 6, meetupDay: 'Saturday', meetupTime: '12pm',
-        ugcCount: 22, bestTime: 'Saturday morning',
-        ugcPrompt: 'Show your chalk art',
+        ugcCount: 22, bestTime: 'Saturday morning', ugcPrompt: 'Show your chalk art',
+        images: ['images/chalk-corner.jpeg'],
+        leaders: ['Dani P.', 'Rosa K.'],
+        lat: 37.7815, lng: -122.4105,
         story: "Every week the crew picks a theme and covers the sidewalk in color. This week: Under the Sea. BLICK chalk kits available at the corner for first-timers — just show up."
+      },
+      {
+        id: 'lego-corner', name: 'Lego Corner', cross: 'Market & 8th',
+        theme: 'lego', themeColor: '#E3000B', tagLabel: 'Brick Builds', tagEmoji: '🧱',
+        crewSize: 10, meetupDay: 'Saturday', meetupTime: '12pm',
+        ugcCount: 38, bestTime: 'Saturday afternoon', ugcPrompt: 'Show your build',
+        images: ['images/lego-corner-1.jpeg', 'images/lego-corner-2.jpeg', 'images/lego-corner-3.jpeg'],
+        leaders: ['Sam L.', 'Mira K.'],
+        lat: 37.7804, lng: -122.4133,
+        story: "Every Saturday the Lego Corner turns Market & 8th into the most colorful construction site on the block. Builds range from miniature city blocks to larger-than-life sculptures that reference the neighborhood itself. All ages, no experience required — BLICK kits include base plates and starter bricks."
+      },
+      {
+        id: 'rubix-corner', name: "Rubik's Corner", cross: 'Market & 5th',
+        theme: 'rubik', themeColor: '#003DA5', tagLabel: 'Speed Cubing', tagEmoji: '🟧',
+        crewSize: 6, meetupDay: 'Saturday', meetupTime: '12pm',
+        ugcCount: 19, bestTime: 'Saturday morning', ugcPrompt: 'Share your solve time',
+        images: ['images/rubix-corner.jpeg'],
+        leaders: ['Chen W.', 'Fatima A.'],
+        lat: 37.7820, lng: -122.4090,
+        story: "The Rubik's Corner crew has been solving cubes at the gateway to Mid-Market since 2025. They host timed solve sessions, teach beginners the beginner method, and display giant mosaic portraits built from solved cubes. Anyone can join — cubes provided."
+      },
+      {
+        id: 'architecture-corner', name: 'Architecture Corner', cross: 'Market & Van Ness',
+        theme: 'architecture', themeColor: '#2C4A7C', tagLabel: 'Urban Design', tagEmoji: '🏛',
+        crewSize: 5, meetupDay: 'Saturday', meetupTime: '12pm',
+        ugcCount: 14, bestTime: 'Weekend mornings', ugcPrompt: 'Share your sketch',
+        images: ['images/architecture-corner.jpeg'],
+        leaders: ['Maya D.', 'Leo V.'],
+        lat: 37.7743, lng: -122.4196,
+        story: "Architecture students and local designers gather at the Van Ness end of Market to sketch, discuss, and reimagine the urban fabric of the corridor. The corner displays hand-drawn elevation studies and model photographs of mid-Market buildings, past and proposed."
+      },
+      {
+        id: 'packman-corner', name: 'Pac-Man Corner', cross: 'Market & 10th',
+        theme: 'packman', themeColor: '#F5C400', tagLabel: 'Arcade Art', tagEmoji: '🕹',
+        crewSize: 9, meetupDay: 'Saturday', meetupTime: '12pm',
+        ugcCount: 28, bestTime: 'Evening', ugcPrompt: 'Show your high score',
+        images: ['images/packman-pole-corner.jpeg'],
+        leaders: ['Alex G.', 'Kim T.'],
+        lat: 37.7793, lng: -122.4157,
+        story: "The Pac-Man Corner wraps poles and pillars in hand-painted arcade tile art every Saturday. The crew re-paints and improves the installation each week — it's never quite the same twice. At night, glow-in-the-dark paint activates the maze. Bring a quarter."
       }
     ];
 
@@ -1311,25 +1830,28 @@
       }).join('');
     }
 
+    function cornerTagStyle(c) {
+      const hex = c.themeColor || '#1BAAB0';
+      return `background:${hex}22;color:${hex}`;
+    }
+
     function renderCorners() {
       const cornerCards = corners.map(c => {
-        let imgInner = '', tagStyle = '';
-        if (c.theme === 'glow') {
-          imgInner  = `<div class="neon-circle"></div><div class="uv-label">UV Active</div>`;
-          tagStyle  = 'background:rgba(180,79,255,0.15);color:#C07AFF';
-        } else if (c.theme === 'plants') {
-          imgInner  = `<div class="corner-emoji-big">🌿</div>`;
-          tagStyle  = 'background:rgba(45,184,112,0.15);color:#3DD880';
-        } else if (c.theme === 'kids') {
-          imgInner  = `<div class="corner-emoji-big">🎨</div>`;
-          tagStyle  = 'background:rgba(232,168,62,0.15);color:#F0C060';
-        }
+        const hasImg = c.images && c.images.length > 0;
+        const imgContent = hasImg
+          ? `<img src="${c.images[0]}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover">`
+          : c.theme === 'glow'   ? `<div class="neon-circle"></div><div class="uv-label">UV Active</div>`
+          : c.theme === 'plants' ? `<div class="corner-emoji-big">🌿</div>`
+          : c.theme === 'kids'   ? `<div class="corner-emoji-big">🎨</div>`
+          : `<div class="corner-emoji-big">${c.tagEmoji}</div>`;
+        const bgStyle = hasImg ? '' : `class="corner-img ${c.theme}"`;
+        const imgClass = hasImg ? `class="corner-img" style="background:#111"` : `class="corner-img ${c.theme}"`;
         return `<div class="corner-card" onclick="openCornerSheet('${c.id}')">` +
-          `<div class="corner-img ${c.theme}">${imgInner}</div>` +
+          `<div ${imgClass}>${imgContent}</div>` +
           `<div class="corner-info">` +
             `<div class="corner-name">${c.name}</div>` +
             `<div class="corner-cross">${c.cross}</div>` +
-            `<span class="tag" style="${tagStyle}">${c.tagEmoji} ${c.tagLabel}</span>` +
+            `<span class="tag" style="${cornerTagStyle(c)}">${c.tagEmoji} ${c.tagLabel}</span>` +
             `<div class="corner-ugc">📷 ${c.ugcPrompt}</div>` +
           `</div></div>`;
       }).join('');
@@ -1538,6 +2060,188 @@
         ])
       );
     }
+
+    // ── PAGE NAVIGATION ──────────────────────────────────────────────────────
+
+    function showPage(page) {
+      const isCorners = page === 'corners';
+      document.getElementById('page-main').style.display    = isCorners ? 'none' : '';
+      document.getElementById('page-corners').style.display = isCorners ? '' : 'none';
+
+      // Sync bottom nav active state
+      document.querySelectorAll('.nav-item').forEach((el, i) => {
+        el.classList.toggle('active', isCorners ? i === 2 : i === 0);
+      });
+      document.querySelectorAll('.top-nav-item').forEach((el, i) => {
+        el.classList.toggle('active', isCorners ? i === 2 : i === 0);
+      });
+
+      if (isCorners) {
+        renderCornerDetails();
+        setTimeout(initMap, 80);
+        // Check if hash targets a specific corner
+        const hash = window.location.hash;
+        if (hash.startsWith('#corner/')) {
+          const id = hash.slice(8);
+          setTimeout(() => {
+            const el = document.getElementById('cd-' + id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 300);
+        }
+      }
+    }
+
+    // ── MAP ───────────────────────────────────────────────────────────────────
+
+    let mapInitialized = false;
+    let leafletMap = null;
+
+    function initMap() {
+      if (mapInitialized) return;
+      mapInitialized = true;
+
+      leafletMap = L.map('corners-map', { scrollWheelZoom: false, zoomControl: true })
+        .setView([37.7800, -122.4140], 15);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd', maxZoom: 19
+      }).addTo(leafletMap);
+
+      corners.forEach(c => {
+        if (!c.lat || !c.lng) return;
+        const color = c.themeColor || '#1BAAB0';
+        L.circleMarker([c.lat, c.lng], {
+          radius: 11, fillColor: color, color: '#fff',
+          weight: 2.5, opacity: 1, fillOpacity: 0.92
+        }).addTo(leafletMap)
+          .bindPopup(
+            `<div style="font-family:'DM Sans',sans-serif;min-width:120px">` +
+            `<strong style="font-family:'DM Serif Display',Georgia,serif;font-size:14px">${c.name}</strong><br>` +
+            `<span style="font-size:11px;color:#6B6B6B">${c.cross}</span><br>` +
+            `<span style="font-size:10px;color:#A0A0A0">👥 Crew of ${c.crewSize} · ${c.meetupDay} ${c.meetupTime}</span>` +
+            `</div>`
+          )
+          .on('click', () => {
+            setTimeout(() => {
+              const el = document.getElementById('cd-' + c.id);
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 200);
+          });
+      });
+    }
+
+    // ── CAROUSEL ─────────────────────────────────────────────────────────────
+
+    const carState = {};
+
+    function moveCarousel(id, dir) {
+      const track = document.getElementById('ct-' + id);
+      const count = track.children.length;
+      if (count <= 1) return;
+      if (!carState[id]) carState[id] = 0;
+      carState[id] = (carState[id] + dir + count) % count;
+      const idx = carState[id];
+      track.style.transform = `translateX(-${idx * 100}%)`;
+      document.querySelectorAll(`#cd-${id} .car-dot`).forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+      });
+    }
+
+    // ── CORNER DETAIL PAGE ────────────────────────────────────────────────────
+
+    let cornerDetailsRendered = false;
+
+    function renderCornerDetails() {
+      if (cornerDetailsRendered) return;
+      cornerDetailsRendered = true;
+
+      const list = document.getElementById('corners-page-list');
+      list.innerHTML = corners.map(c => {
+        const qrUrl = encodeURIComponent(`https://huezokate.github.io/the-pulse/#corner/${c.id}`);
+        const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=${qrUrl}&color=1A1A1A&bgcolor=FDF8F0&margin=6`;
+
+        const imgs = c.images && c.images.length ? c.images : [];
+        const multiImg = imgs.length > 1;
+
+        const carouselHtml = imgs.length
+          ? `<div class="carousel-wrap">
+               <div class="carousel-inner" id="ct-${c.id}">
+                 ${imgs.map(src => `<img class="carousel-slide" src="${src}" alt="${c.name}">`).join('')}
+               </div>
+               ${multiImg ? `<button class="car-btn car-prev" onclick="moveCarousel('${c.id}',-1)">‹</button>` : ''}
+               ${multiImg ? `<button class="car-btn car-next" onclick="moveCarousel('${c.id}',1)">›</button>` : ''}
+               ${multiImg ? `<div class="car-dots">${imgs.map((_,i)=>`<span class="car-dot${i===0?' active':''}" onclick="moveCarousel('${c.id}',${i - (carState[c.id]||0)})"></span>`).join('')}</div>` : ''}
+             </div>`
+          : `<div class="carousel-wrap" style="background:linear-gradient(160deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center">
+               <div style="font-size:64px">${c.tagEmoji}</div>
+             </div>`;
+
+        const leaders = c.leaders ? c.leaders.join(', ') : '—';
+
+        return `<div class="corner-detail-card" id="cd-${c.id}">
+          ${carouselHtml}
+          <div class="corner-detail-info">
+            <div class="corner-detail-top">
+              <div>
+                <div class="corner-detail-name">${c.name}</div>
+                <div class="corner-detail-cross">${c.cross}</div>
+                <span class="tag" style="${cornerTagStyle(c)}">${c.tagEmoji} ${c.tagLabel}</span>
+              </div>
+              <div class="corner-qr">
+                <img src="${qrSrc}" alt="QR code for ${c.name}" loading="lazy">
+                <div class="corner-qr-label">Scan to explore</div>
+              </div>
+            </div>
+            <p class="corner-detail-story">${c.story}</p>
+            <div class="corner-meta-grid">
+              <div class="meta-item">Meetup<strong>${c.meetupDay} at ${c.meetupTime}</strong></div>
+              <div class="meta-item">Best time<strong>${c.bestTime}</strong></div>
+              <div class="meta-item">Crew<strong>${c.crewSize} neighbors</strong></div>
+              <div class="meta-item">Photos<strong>${c.ugcCount} shared</strong></div>
+              <div class="meta-item" style="grid-column:1/-1">Corner leaders<strong>${leaders}</strong></div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── APPLICATION FORM ──────────────────────────────────────────────────────
+
+    function openApplicationForm() {
+      document.getElementById('app-form-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeApplicationForm() {
+      document.getElementById('app-form-overlay').classList.remove('open');
+      document.getElementById('form-fields').style.display = '';
+      document.getElementById('form-success').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function submitApplication() {
+      const ref = '#MM-' + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('form-fields').style.display = 'none';
+      const success = document.getElementById('form-success');
+      document.getElementById('form-ref-num').textContent = 'Reference: ' + ref;
+      success.classList.add('show');
+    }
+
+    // ── NAV CLICK HANDLERS ────────────────────────────────────────────────────
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Wire Corners nav tabs
+      document.querySelectorAll('.nav-item').forEach((el, i) => {
+        el.addEventListener('click', () => { if (i === 2) showPage('corners'); else if (i === 0) showPage('main'); });
+      });
+      document.querySelectorAll('.top-nav-item').forEach((el, i) => {
+        el.addEventListener('click', () => { if (i === 2) showPage('corners'); else if (i === 0) showPage('main'); });
+      });
+
+      // Hash routing for QR codes
+      if (window.location.hash.startsWith('#corner/')) showPage('corners');
+    });
 
     // ── INIT ─────────────────────────────────────────────────────────────────
 
