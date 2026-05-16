@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Pulse — Mid-Market SF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --stop:         #C0392B;
+      --coral:        #E8756A;
+      --pink:         #C2527A;
+      --calypso:      #1BAAB0;
+      --honied:       #F2E8D5;
+
+      --bg:           #F2E8D5;
+      --bg-warm:      #EDE0C8;
+      --surface:      #FFFFFF;
+      --surface-tint: #FDF8F0;
+
+      --text-primary:   #1A1A1A;
+      --text-secondary: #6B6B6B;
+      --text-muted:     #A0A0A0;
+      --text-on-dark:   #F2E8D5;
+
+      --open:      #1BAAB0;
+      --soon:      #E8756A;
+      --live:      #C0392B;
+      --community: #C2527A;
+      --corner:    #E8756A;
+
+      --border:      rgba(26, 26, 26, 0.10);
+      --border-warm: rgba(192, 57, 43, 0.15);
+
+      --shadow-card:  0 2px 12px rgba(26, 26, 26, 0.08);
+      --shadow-sheet: 0 -4px 32px rgba(26, 26, 26, 0.16);
+
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+
+      --page-px:     16px;
+      --gap-sm:       8px;
+      --gap-md:      12px;
+      --gap-lg:      20px;
+      --gap-section: 32px;
+
+      --radius-sm:   8px;
+      --radius-md:  14px;
+      --radius-lg:  18px;
+      --radius-xl:  24px;
+      --radius-pill: 100px;
+    }
+
+    html, body {
+      background: var(--bg);
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── APP CONTAINER ── */
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      background: var(--bg);
+      min-height: 100vh;
+      padding-bottom: 84px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--bg);
+      padding: 52px var(--page-px) 28px;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 10vw, 72px);
+      color: var(--text-primary);
+      line-height: 1.0;
+      margin-bottom: 8px;
+    }
+
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 22px;
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 56px;
+      right: var(--page-px);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--calypso);
+      letter-spacing: 1px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--calypso);
+      animation: pulse-dot 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .toggle-wrap {
+      display: inline-flex;
+      background: rgba(26,26,26,0.06);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 4px;
+    }
+
+    .toggle-btn {
+      padding: 8px 20px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      line-height: 1;
+    }
+
+    .toggle-btn.active {
+      background: var(--calypso);
+      color: var(--text-on-dark);
+    }
+
+    /* ── STATS ── */
+    .stats-section {
+      padding: 24px var(--page-px) 0;
+      background: var(--bg);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap-md);
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 14px;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+      user-select: none;
+    }
+
+    .stat-card:hover  { border-color: var(--calypso); }
+    .stat-card:active { transform: scale(0.97); }
+
+    .stat-icon   { font-size: 18px; margin-bottom: 8px; display: block; }
+    .stat-number { font-family: var(--font-display); font-size: 28px; line-height: 1; margin-bottom: 4px; }
+    .stat-number.coral { color: var(--corner); }
+    .stat-number.red   { color: var(--stop); }
+
+    .stat-label {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-delta {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--calypso);
+      margin-top: 3px;
+    }
+
+    /* ── ACTIVITY ROW ── */
+    .activity-section {
+      padding: 24px var(--page-px) 0;
+      background: var(--bg);
+    }
+
+    .activity-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap-md);
+    }
+
+    .activity-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .pentagon-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pentagon-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 6px;
+    }
+
+    .pentagon-week {
+      font-family: var(--font-body);
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .pentagon-arrow {
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1;
+      transition: border-color 0.2s, color 0.2s;
+      padding: 0;
+    }
+
+    .pentagon-arrow:hover {
+      border-color: var(--calypso);
+      color: var(--calypso);
+    }
+
+    .pentagon-svg-wrap { width: 100%; }
+
+    .widgets-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap-md);
+    }
+
+    .widget-card {
+      cursor: pointer;
+      transition: border-color 0.2s;
+      flex: 1;
+    }
+
+    .widget-card:hover { border-color: var(--calypso); }
+
+    .widget-label {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .io-bar-row { display: flex; flex-direction: column; gap: 8px; }
+
+    .io-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .io-bar-track {
+      height: 5px;
+      background: rgba(26,26,26,0.08);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .io-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    .io-bar-fill.outdoor { background: var(--calypso); }
+    .io-bar-fill.indoor  { background: var(--coral); }
+
+    .club-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+
+    .club-item:last-child { margin-bottom: 0; }
+
+    .club-name {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-primary);
+    }
+
+    .club-badge {
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      flex-shrink: 0;
+    }
+
+    .club-badge.live { background: rgba(192,57,43,0.12); color: var(--live); }
+    .club-badge.soon { background: rgba(27,170,176,0.12); color: var(--calypso); }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: var(--gap-section) 0 0;
+    }
+
+    .section-bg-warm { background: var(--bg-warm); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--page-px);
+      margin-bottom: var(--gap-md);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--text-primary);
+    }
+
+    .section-cta {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--calypso);
+      cursor: pointer;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 var(--page-px) 16px;
+    }
+
+    .scroll-row {
+      display: flex;
+      gap: var(--gap-md);
+      overflow-x: auto;
+      padding: 4px var(--page-px) 12px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .scroll-row::-webkit-scrollbar { display: none; }
+
+    /* ── FOOD CHIPS ── */
+    .food-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      min-width: 120px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+      user-select: none;
+    }
+
+    .food-chip.is-open { border-color: rgba(27, 170, 176, 0.35); }
+    .food-chip.is-soon { border-color: rgba(232, 117, 106, 0.35); }
+    .food-chip:active  { transform: scale(0.96); }
+
+    .food-name {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      white-space: nowrap;
+    }
+
+    .food-cat {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .food-status { font-family: var(--font-body); font-size: 10px; font-weight: 500; }
+    .food-status.open { color: var(--open); }
+    .food-status.soon { color: var(--soon); }
+
+    /* ── CORNER CARDS ── */
+    .corner-card {
+      width: 200px;
+      flex-shrink: 0;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      user-select: none;
+    }
+
+    .corner-card:hover {
+      border-color: var(--calypso);
+      transform: translateY(-2px);
+    }
+
+    .corner-img {
+      width: 100%;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .corner-img.glow   { background: linear-gradient(160deg, #0D0020, #1A0035); }
+    .corner-img.plants { background: linear-gradient(160deg, #0A1F0A, #152E15); }
+    .corner-img.kids   { background: linear-gradient(160deg, #2A1F08, #3A2A10); }
+    .corner-img.cta    { background: rgba(0,0,0,0.03); border-bottom: 1px solid var(--border); }
+
+    .neon-circle {
+      width: 56px;
+      height: 56px;
+      border: 2px solid #B44FFF;
+      border-radius: 50%;
+      animation: glow-pulse 2s ease-in-out infinite;
+    }
+
+    .corner-emoji-big { font-size: 48px; line-height: 1; }
+
+    .uv-label {
+      position: absolute;
+      bottom: 9px;
+      left: 10px;
+      font-family: var(--font-body);
+      font-size: 8px;
+      font-weight: 500;
+      color: #B44FFF;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .corner-cta-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cta-circle {
+      width: 40px;
+      height: 40px;
+      border: 1.5px dashed var(--text-muted);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    .corner-info { padding: 11px 12px 12px; }
+
+    .corner-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .corner-cross {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.3px;
+    }
+
+    .corner-ugc {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 7px;
+      font-family: var(--font-body);
+      font-size: 9px;
+      color: var(--calypso);
+      font-weight: 500;
+    }
+
+    /* ── STORY CARDS ── */
+    .story-card {
+      width: 260px;
+      flex-shrink: 0;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+    }
+
+    .story-card:hover {
+      border-color: var(--coral);
+      background: rgba(232,117,106,0.04);
+    }
+
+    .story-year {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--stop);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .story-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .story-excerpt {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .story-cta {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--calypso);
+      font-weight: 500;
+    }
+
+    /* ── FOUNDERS ── */
+    .founders-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--gap-md);
+      padding: 0 var(--page-px);
+    }
+
+    .founder-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 14px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+    }
+
+    .founder-card:hover {
+      border-color: var(--coral);
+      background: rgba(232,117,106,0.04);
+    }
+
+    .founder-icon  { font-size: 24px; margin-bottom: 6px; display: block; }
+    .founder-name  { font-family: var(--font-display); font-size: 11px; color: var(--text-primary); line-height: 1.3; }
+    .founder-type  { font-family: var(--font-body); font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+    .founder-join  { border-style: dashed; }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: rgba(242,232,213,0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0 env(safe-area-inset-bottom, 16px);
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-family: var(--font-body);
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      padding: 0 8px;
+    }
+
+    .nav-item.active { color: var(--calypso); }
+    .nav-icon { font-size: 20px; line-height: 1; }
+
+    /* ── BOTTOM SHEET ── */
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,26,0.50);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .sheet-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .sheet {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(24px);
+      width: 100%;
+      max-width: 430px;
+      background: var(--surface);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 24px 40px;
+      max-height: 70vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-sheet);
+      z-index: 201;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .sheet.open {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .sheet-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface-tint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1;
+    }
+
+    .sheet-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--text-primary);
+      padding-right: 44px;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .sheet-subtitle {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .sheet-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .sheet-row:last-child { border-bottom: none; }
+
+    .sheet-row-label {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .sheet-row-value {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-primary);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .sheet-body {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .sheet-body p { margin-bottom: 14px; }
+    .sheet-body p:last-child { margin-bottom: 0; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(1.5); }
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 8px #B44FFF, 0 0 16px rgba(180,79,255,0.3); }
+      50%       { box-shadow: 0 0 18px #B44FFF, 0 0 36px rgba(180,79,255,0.5); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+      <div class="live-badge">
+        <span class="live-dot"></span> Live
+      </div>
+      <p class="hero-eyebrow">Mid-Market · Market St, 5th–Van Ness</p>
+      <h1 class="hero-title">The<br>Pulse</h1>
+      <p class="hero-sub" id="hero-sub">Saturday · May 16 · What's happening now</p>
+      <div class="toggle-wrap">
+        <button class="toggle-btn active" id="btn-day" onclick="setMode('day')">☀️ Day</button>
+        <button class="toggle-btn" id="btn-night" onclick="setMode('night')">🌙 Night</button>
+      </div>
+    </section>
+
+    <!-- ── STATS ROW ── -->
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card" onclick="openStatSheet('places')">
+          <span class="stat-icon">🏪</span>
+          <div class="stat-number">14</div>
+          <div class="stat-label">Places open</div>
+          <div class="stat-delta">↑ 3 just opened</div>
+        </div>
+        <div class="stat-card" onclick="openStatSheet('corners')">
+          <span class="stat-icon">📍</span>
+          <div class="stat-number coral">3</div>
+          <div class="stat-label">Corners active</div>
+          <div class="stat-delta">Sat noon meetup</div>
+        </div>
+        <div class="stat-card" onclick="openStatSheet('events')">
+          <span class="stat-icon">📅</span>
+          <div class="stat-number" id="stat-events-num">7</div>
+          <div class="stat-label" id="stat-events-label">Events today</div>
+          <div class="stat-delta" id="stat-events-delta">2 tonight</div>
+        </div>
+        <div class="stat-card" onclick="openStatSheet('outdoor')">
+          <span class="stat-icon">🌤</span>
+          <div class="stat-number red" id="stat-outdoor">71%</div>
+          <div class="stat-label">Outdoor</div>
+          <div class="stat-delta" id="stat-outdoor-delta">It's a park day</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACTIVITY ROW ── -->
+    <div class="activity-section">
+      <div class="activity-row" style="margin-top:16px">
+        <div class="activity-card pentagon-card">
+          <div class="pentagon-nav">
+            <button class="pentagon-arrow" onclick="prevWeek()">‹</button>
+            <span class="pentagon-week" id="week-label">May 12–18</span>
+            <button class="pentagon-arrow" onclick="nextWeek()">›</button>
+          </div>
+          <div class="pentagon-svg-wrap" id="pentagon-wrap"></div>
+        </div>
+        <div class="widgets-col">
+          <div class="activity-card widget-card" onclick="openStatSheet('outdoor')">
+            <span class="widget-label">Outdoor vs Indoor</span>
+            <div class="io-bar-row">
+              <div>
+                <div class="io-bar-label">
+                  <span>🌳 Outdoor</span>
+                  <span id="w-outdoor-pct">71%</span>
+                </div>
+                <div class="io-bar-track">
+                  <div class="io-bar-fill outdoor" id="bar-outdoor" style="width:71%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="io-bar-label">
+                  <span>🏠 Indoor</span>
+                  <span id="w-indoor-pct">29%</span>
+                </div>
+                <div class="io-bar-track">
+                  <div class="io-bar-fill indoor" id="bar-indoor" style="width:29%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="activity-card widget-card" onclick="openClubsSheet()">
+            <span class="widget-label">Active Clubs</span>
+            <div class="club-item">
+              <span class="club-name">Running Club</span>
+              <span class="club-badge live">LIVE</span>
+            </div>
+            <div class="club-item">
+              <span class="club-name">Scavenger Hunt</span>
+              <span class="club-badge soon">3pm</span>
+            </div>
+            <div class="club-item">
+              <span class="club-name">Night Run</span>
+              <span class="club-badge soon">8:30p</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FOOD OPEN NOW ── -->
+    <div class="section section-bg-warm" style="padding-bottom:var(--gap-section)">
+      <div class="section-header">
+        <h2 class="section-title" id="food-section-title">🍳 Food open now</h2>
+        <span class="section-cta">See all</span>
+      </div>
+      <hr class="divider">
+      <div class="scroll-row" id="food-row"></div>
+    </div>
+
+    <!-- ── OUR CORNERS ── -->
+    <div class="section" style="padding-bottom:var(--gap-section)">
+      <div class="section-header">
+        <h2 class="section-title">Our Corners</h2>
+        <span class="section-cta" onclick="openAdoptSheet()">Adopt a corner →</span>
+      </div>
+      <hr class="divider">
+      <div class="scroll-row" id="corners-row"></div>
+    </div>
+
+    <!-- ── NEIGHBORHOOD STORIES ── -->
+    <div class="section section-bg-warm" style="padding-bottom:var(--gap-section)">
+      <div class="section-header">
+        <h2 class="section-title">Neighborhood Stories</h2>
+      </div>
+      <hr class="divider">
+      <div class="scroll-row" id="stories-row"></div>
+    </div>
+
+    <!-- ── FOUNDING PARTNERS ── -->
+    <div class="section" style="padding-bottom:40px">
+      <div class="section-header">
+        <h2 class="section-title">Founding Partners</h2>
+      </div>
+      <hr class="divider">
+      <div class="founders-grid" id="founders-grid"></div>
+    </div>
+
+  </div><!-- /.app -->
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav">
+    <div class="nav-item active">
+      <div class="nav-icon">⚡</div>
+      <div>Pulse</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">📍</div>
+      <div>Map</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">📸</div>
+      <div>Corners</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">📅</div>
+      <div>Events</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">👤</div>
+      <div>Me</div>
+    </div>
+  </nav>
+
+  <!-- ── BOTTOM SHEET ── -->
+  <div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet">
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+    <div class="sheet-title"   id="sheet-title"></div>
+    <div class="sheet-subtitle" id="sheet-subtitle"></div>
+    <div id="sheet-content"></div>
+  </div>
+
+  <script>
+    // ── DATA ─────────────────────────────────────────────────────────────────
+
+    const businesses = [
+      {
+        id: 'bubbles', name: 'Bubbles Bakery', type: 'cafe',
+        isOpen: true, closesAt: '9pm', opensAt: null, emoji: '🧋',
+        story: 'Maria Tanaka moved from Osaka in 2020 and opened Bubbles as a tribute to Japanese milk tea culture — with a Mission Street twist. The cream puffs sell out before noon.'
+      },
+      {
+        id: 'zaras', name: "Zara's Kitchen", type: 'restaurant',
+        isOpen: true, closesAt: '10pm', opensAt: null, emoji: '🍜',
+        story: 'Family recipes from Oaxaca, served fast and fresh every day since 2019. Zara still runs the line herself on Saturday mornings. The mole takes three days to make.'
+      },
+      {
+        id: 'market-table', name: 'The Market Table', type: 'restaurant',
+        isOpen: true, closesAt: '11pm', opensAt: null, emoji: '🥗',
+        story: 'A seasonal California menu sourced from three local farms. Chef Devon Walsh trained under Alice Waters and came back to open something neighborhood-first.'
+      },
+      {
+        id: 'espresso', name: 'Espresso Republic', type: 'cafe',
+        isOpen: true, closesAt: '8pm', opensAt: null, emoji: '☕',
+        story: 'Opened by two former tech workers who left their jobs to source and roast their own beans. Third-wave coffee, Market Street prices.'
+      },
+      {
+        id: 'saffron', name: 'Saffron', type: 'restaurant',
+        isOpen: true, closesAt: '9:30pm', opensAt: null, emoji: '🍛',
+        story: 'Priya Nair spent ten years cooking in Mumbai hotels before moving to SF. Saffron is her second act — intimate, family-style, always fragrant.'
+      },
+      {
+        id: 'the-edit', name: 'The Edit', type: 'retail',
+        isOpen: true, closesAt: '7pm', opensAt: null, emoji: '🛍',
+        story: 'A curated vintage shop that also carries local zines, ceramics, and screenprints. Owner Rosa says the neighborhood brings the inventory.'
+      },
+      {
+        id: 'jons-bar', name: "Jon's Bar", type: 'bar',
+        isOpen: false, closesAt: null, opensAt: '5pm', emoji: '🍺',
+        story: "Jon Marchetti has poured every decade Market Street has lived through. Opened in 1988, survived three recessions and a pandemic, and still knows every regular by name."
+      },
+      {
+        id: 'cactus', name: 'Cactus Club', type: 'bar',
+        isOpen: false, closesAt: null, opensAt: '6pm', emoji: '🌵',
+        story: 'A mezcal-forward cocktail bar with a desert vibe. Opened in 2022 by two bartenders who wanted a place that felt like nowhere else in SF.'
+      }
+    ];
+
+    const corners = [
+      {
+        id: 'glow-corner',
+        name: 'The Glow Corner', cross: 'Market & 7th',
+        theme: 'glow', tagLabel: 'Blacklight Art', tagEmoji: '🌟',
+        crewSize: 8, meetupDay: 'Saturday', meetupTime: '12pm',
+        ugcCount: 47, bestTime: 'After 8pm',
+        ugcPrompt: 'Share your glow photo',
+        story: "Team Glow claims the corner every Saturday with UV paint, glow tape, and whatever they can haul from BLICK. After dark, it stops traffic. Wear white — it'll catch the light."
+      },
+      {
+        id: 'garden-corner',
+        name: 'Garden Corner', cross: 'Market & 9th',
+        theme: 'plants', tagLabel: 'Community Garden', tagEmoji: '🌿',
+        crewSize: 12, meetupDay: 'Saturday', meetupTime: '12pm',
+        ugcCount: 31, bestTime: 'Weekend mornings',
+        ugcPrompt: 'Show what you planted',
+        story: "Twelve neighbors show up every Saturday to tend the planter boxes along Market & 9th. Herbs, native flowers, the occasional tomato. Bring seeds, take cuttings — the corner is for everyone."
+      },
+      {
+        id: 'chalk-corner',
+        name: 'Chalk Corner', cross: 'Market & 6th',
+        theme: 'kids', tagLabel: 'Chalk Art', tagEmoji: '🎨',
+        crewSize: 6, meetupDay: 'Saturday', meetupTime: '12pm',
+        ugcCount: 22, bestTime: 'Saturday morning',
+        ugcPrompt: 'Show your chalk art',
+        story: "Every week the crew picks a theme and covers the sidewalk in color. This week: Under the Sea. BLICK chalk kits available at the corner for first-timers — just show up."
+      }
+    ];
+
+    const events = [
+      { title: 'Sunset Yoga', time: '6pm', isDay: true, isNight: false, category: 'sport', location: 'UN Plaza', isFree: true, emoji: '🧘' },
+      { title: 'Mural Opening', time: '5pm', isDay: true, isNight: false, category: 'arts', location: '1028 Market', isFree: true, emoji: '🎨' },
+      { title: 'Scavenger Hunt', time: '3pm', isDay: true, isNight: false, category: 'community', location: 'Market Street', isFree: true, emoji: '🗺' },
+      { title: 'Community Potluck', time: '12pm', isDay: true, isNight: false, category: 'food', location: 'Mid-Market Foundation', isFree: true, emoji: '🍲' },
+      { title: 'Jazz at The Chapel', time: '7pm', isDay: false, isNight: true, category: 'music', location: 'The Chapel', isFree: false, emoji: '🎷' },
+      { title: 'DJ Selena B', time: '9pm', isDay: false, isNight: true, category: 'music', location: 'Vinyl SF', isFree: false, emoji: '🎧' },
+      { title: 'Night Run', time: '8:30pm', isDay: false, isNight: true, category: 'sport', location: 'The Grove', isFree: true, emoji: '🏃' }
+    ];
+
+    const stories = [
+      {
+        id: 'jons-bar',
+        year: 'Est. 1988',
+        title: "How Jon's Bar Survived Five Decades on Market Street",
+        excerpt: "Three recessions, a pandemic, and a neighborhood in constant reinvention. Jon Marchetti has a theory about why he's still here.",
+        body: "Jon Marchetti has poured every decade Market Street has lived through. Opened in 1988 in a space that was once a hardware store, Jon's Bar has survived the first dot-com bust, the 2008 crash, COVID, and more neighborhood reinventions than anyone can count.\n\n'The secret is you never stop being a local bar,' Jon says from behind the stick. 'The neighborhood changes. The people change. But if you keep showing up and you know people's names, they keep showing up too.'\n\nJon's daughter Sarah now runs the Tuesday and Wednesday shifts. The family is considering a second location — but they haven't decided. 'We're not in a hurry,' Jon says. 'This block isn't going anywhere.'"
+      },
+      {
+        id: 'garden-women',
+        year: 'Est. 2024',
+        title: 'The Women Who Planted Market Street',
+        excerpt: "The Garden Corner didn't start as a program. It started as three women who were tired of a bare concrete median.",
+        body: "In January 2024, three neighbors — Ximena, Carol, and Yuki — showed up with bags of soil and a box of seedlings. Nobody asked them to. Nobody funded them. They just started planting.\n\nSix months later, the Garden Corner at Market & 9th has twelve regular volunteers, a BLICK supply kit, a $50/month city grant, and 31 pieces of community photos shared through The Pulse.\n\n'We wanted the corner to feel alive,' Ximena says. 'A place people would stop and look at.' Now people bring seeds on Saturday mornings, take cuttings home, and leave notes in the planter box. The corner is alive."
+      },
+      {
+        id: 'saffron',
+        year: 'Est. 2023',
+        title: "Saffron's Second Act",
+        excerpt: 'Priya Nair spent a decade cooking in Mumbai hotels. Then she moved to Market Street and started over — on her own terms.',
+        body: "Chef Priya Nair worked in luxury hotels for ten years. Long hours, beautiful food, and almost no connection to the people eating it. 'I was cooking for events,' she says. 'I wanted to cook for people.'\n\nSaffron opened in 2023 in a narrow storefront on Market between 7th and 8th. There are eight tables. Reservations are hard to get on weekends. The menu changes with what Priya finds at the farmers' market each week.\n\n'The neighborhood tells me what to cook.' She means it literally — regulars text her suggestions, bring herbs from the Garden Corner, and show up early to watch her set up the mise en place. The restaurant is a two-way conversation."
+      },
+      {
+        id: 'glow-corner',
+        year: 'Est. 2026',
+        title: 'The Corner That Glows',
+        excerpt: 'Every Saturday after dark, Market & 7th turns into something you weren\'t expecting.',
+        body: "It started with LED tape and a YouTube tutorial. Marcus and his crew from the Mid-Market running club wanted to do something visible — something that would make the block feel claimed, not abandoned.\n\nNow the Glow Corner at Market & 7th operates in two modes: daytime installation, and after-dark activation. The crew shows up Saturday at noon with UV paint, glow tape, and custom-cut blacklight panels. After 8pm, when it's fully dark, the corner comes alive in a way that stops foot traffic.\n\n'We want people to look up,' Marcus says. 'The block is beautiful. It just needs some help showing it.'"
+      }
+    ];
+
+    const founders = [
+      {
+        id: 'blick', icon: '🎨', name: 'BLICK Art Materials', type: 'Art Supply Partner',
+        story: 'BLICK provides supply kits for every Adopt a Corner crew — UV paint, chalk sets, garden tools. They also run the first-timer kits for new corner adoptions on Market Street.'
+      },
+      {
+        id: 'mmf', icon: '🏛', name: 'Mid-Market Foundation', type: 'Community Partner',
+        story: 'The Foundation administers the $50/month corner grant program and connects Adopt a Corner crews with city resources, permits, and neighbors across the corridor.'
+      },
+      {
+        id: 'mmba', icon: '🤝', name: 'MMBA', type: 'Business Association',
+        story: 'The Mid-Market Business Association connects The Pulse with member businesses, curates the Founding Partners program, and co-hosts neighborhood events on the corridor.'
+      },
+      {
+        id: 'urban-alchemy', icon: '✨', name: 'Urban Alchemy', type: 'Safety Partner',
+        story: 'Urban Alchemy keeps the corridor active and safe, staffing neighborhood ambassadors on Market Street seven days a week. They show up so the neighborhood can too.'
+      }
+    ];
+
+    const weeks = [
+      { label: 'Apr 28–May 4', arts: 55, food: 70, music: 45, community: 75, sport: 60 },
+      { label: 'May 5–11',     arts: 65, food: 78, music: 55, community: 82, sport: 50 },
+      { label: 'May 12–18',   arts: 70, food: 85, music: 60, community: 90, sport: 45 }
+    ];
+
+    let weekIdx = 2;
+    let isNight = false;
+
+    // ── PENTAGON ─────────────────────────────────────────────────────────────
+
+    function pentaPoints(arts, food, music, community, sport, cx, cy, r) {
+      cx = cx ?? 75; cy = cy ?? 75; r = r ?? 60;
+      const angles = [-90, -18, 54, 126, 198];
+      const values = [arts, food, music, community, sport];
+      return values.map((v, i) => {
+        const a = angles[i] * Math.PI / 180;
+        const s = v / 100;
+        return (cx + r * s * Math.cos(a)).toFixed(2) + ',' + (cy + r * s * Math.sin(a)).toFixed(2);
+      }).join(' ');
+    }
+
+    function outerPts(r) {
+      return pentaPoints(100, 100, 100, 100, 100, 75, 75, r);
+    }
+
+    function renderPentagon() {
+      const w = weeks[weekIdx];
+      document.getElementById('week-label').textContent = w.label;
+      const pts = pentaPoints(w.arts, w.food, w.music, w.community, w.sport);
+      const outer = outerPts(58);
+      const mid   = outerPts(38);
+
+      const labels = [
+        { text: 'Arts',      x: 75,  y: 9,   anchor: 'middle' },
+        { text: 'Food',      x: 149, y: 57,  anchor: 'end'    },
+        { text: 'Music',     x: 149, y: 142, anchor: 'end'    },
+        { text: 'Community', x: 1,   y: 142, anchor: 'start'  },
+        { text: 'Sport',     x: 1,   y: 57,  anchor: 'start'  }
+      ];
+
+      const svgLabels = labels.map(l =>
+        `<text x="${l.x}" y="${l.y}" text-anchor="${l.anchor}" ` +
+        `font-family="'DM Sans',sans-serif" font-size="9" fill="#A0A0A0">${l.text}</text>`
+      ).join('');
+
+      document.getElementById('pentagon-wrap').innerHTML =
+        `<svg viewBox="0 0 150 150" width="100%" style="overflow:visible" xmlns="http://www.w3.org/2000/svg">` +
+          `<polygon points="${outer}" fill="none" stroke="rgba(26,26,26,0.08)" stroke-width="0.8"/>` +
+          `<polygon points="${mid}"   fill="none" stroke="rgba(26,26,26,0.05)" stroke-width="0.8"/>` +
+          `<polygon points="${pts}" fill="rgba(27,170,176,0.18)" stroke="#1BAAB0" stroke-width="1.5" stroke-linejoin="round"/>` +
+          svgLabels +
+        `</svg>`;
+    }
+
+    function prevWeek() { if (weekIdx > 0) { weekIdx--; renderPentagon(); } }
+    function nextWeek() { if (weekIdx < weeks.length - 1) { weekIdx++; renderPentagon(); } }
+
+    // ── DAY / NIGHT TOGGLE ────────────────────────────────────────────────────
+
+    function setMode(mode) {
+      isNight = mode === 'night';
+      document.getElementById('btn-day').classList.toggle('active', !isNight);
+      document.getElementById('btn-night').classList.toggle('active', isNight);
+
+      document.getElementById('stat-events-label').textContent  = isNight ? 'Events tonight' : 'Events today';
+      document.getElementById('stat-events-delta').textContent  = isNight ? '3 still going'  : '2 tonight';
+      document.getElementById('stat-outdoor').textContent       = isNight ? '38%' : '71%';
+      document.getElementById('stat-outdoor-delta').textContent = isNight ? 'Moving inside'   : "It's a park day";
+      document.getElementById('food-section-title').textContent = isNight ? '🍺 Open tonight'  : '🍳 Food open now';
+      document.getElementById('w-outdoor-pct').textContent      = isNight ? '38%' : '71%';
+      document.getElementById('w-indoor-pct').textContent       = isNight ? '62%' : '29%';
+      document.getElementById('bar-outdoor').style.width        = isNight ? '38%' : '71%';
+      document.getElementById('bar-indoor').style.width         = isNight ? '62%' : '29%';
+    }
+
+    // ── RENDER SECTIONS ───────────────────────────────────────────────────────
+
+    function renderFood() {
+      document.getElementById('food-row').innerHTML = businesses.map(b => {
+        const cls = b.isOpen ? 'is-open' : 'is-soon';
+        const statusText = b.isOpen ? `Open · closes ${b.closesAt}` : `Opens ${b.opensAt}`;
+        const statusCls  = b.isOpen ? 'open' : 'soon';
+        return `<div class="food-chip ${cls}" onclick="openBusinessSheet('${b.id}')">` +
+          `<div class="food-name">${b.emoji} ${b.name}</div>` +
+          `<div class="food-cat">${b.type}</div>` +
+          `<div class="food-status ${statusCls}">${statusText}</div>` +
+          `</div>`;
+      }).join('');
+    }
+
+    function renderCorners() {
+      const cornerCards = corners.map(c => {
+        let imgInner = '', tagStyle = '';
+        if (c.theme === 'glow') {
+          imgInner  = `<div class="neon-circle"></div><div class="uv-label">UV Active</div>`;
+          tagStyle  = 'background:rgba(180,79,255,0.15);color:#C07AFF';
+        } else if (c.theme === 'plants') {
+          imgInner  = `<div class="corner-emoji-big">🌿</div>`;
+          tagStyle  = 'background:rgba(45,184,112,0.15);color:#3DD880';
+        } else if (c.theme === 'kids') {
+          imgInner  = `<div class="corner-emoji-big">🎨</div>`;
+          tagStyle  = 'background:rgba(232,168,62,0.15);color:#F0C060';
+        }
+        return `<div class="corner-card" onclick="openCornerSheet('${c.id}')">` +
+          `<div class="corner-img ${c.theme}">${imgInner}</div>` +
+          `<div class="corner-info">` +
+            `<div class="corner-name">${c.name}</div>` +
+            `<div class="corner-cross">${c.cross}</div>` +
+            `<span class="tag" style="${tagStyle}">${c.tagEmoji} ${c.tagLabel}</span>` +
+            `<div class="corner-ugc">📷 ${c.ugcPrompt}</div>` +
+          `</div></div>`;
+      }).join('');
+
+      const ctaCard =
+        `<div class="corner-card" onclick="openAdoptSheet()">` +
+          `<div class="corner-img cta">` +
+            `<div class="corner-cta-inner">` +
+              `<div class="cta-circle">+</div>` +
+              `<div style="font-family:var(--font-body);font-size:10px;color:var(--text-muted);text-align:center;padding:0 12px">Adopt a<br>corner</div>` +
+            `</div>` +
+          `</div>` +
+          `<div class="corner-info">` +
+            `<div class="corner-name" style="color:var(--text-muted)">Your corner here</div>` +
+            `<div class="corner-cross">Market & ???</div>` +
+            `<span class="tag" style="border:1px dashed var(--text-muted);color:var(--text-muted)">Claim it</span>` +
+          `</div></div>`;
+
+      document.getElementById('corners-row').innerHTML = cornerCards + ctaCard;
+    }
+
+    function renderStories() {
+      document.getElementById('stories-row').innerHTML = stories.map(s =>
+        `<div class="story-card" onclick="openStorySheet('${s.id}')">` +
+          `<div class="story-year">${s.year}</div>` +
+          `<div class="story-title">${s.title}</div>` +
+          `<div class="story-excerpt">${s.excerpt}</div>` +
+          `<div class="story-cta">Read the full story →</div>` +
+        `</div>`
+      ).join('');
+    }
+
+    function renderFounders() {
+      const cards = founders.map(f =>
+        `<div class="founder-card" onclick="openFounderSheet('${f.id}')">` +
+          `<span class="founder-icon">${f.icon}</span>` +
+          `<div class="founder-name">${f.name}</div>` +
+          `<div class="founder-type">${f.type}</div>` +
+        `</div>`
+      ).join('');
+
+      const joinCard =
+        `<div class="founder-card founder-join" onclick="openJoinSheet()">` +
+          `<span class="founder-icon">➕</span>` +
+          `<div class="founder-name" style="color:var(--calypso)">Become a Partner</div>` +
+          `<div class="founder-type">Join us</div>` +
+        `</div>`;
+
+      document.getElementById('founders-grid').innerHTML = cards + joinCard;
+    }
+
+    // ── BOTTOM SHEET ──────────────────────────────────────────────────────────
+
+    function openSheet(title, subtitle, contentHTML) {
+      document.getElementById('sheet-title').textContent   = title;
+      document.getElementById('sheet-subtitle').textContent = subtitle;
+      document.getElementById('sheet-content').innerHTML   = contentHTML;
+      document.getElementById('overlay').classList.add('open');
+      document.getElementById('sheet').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSheet() {
+      document.getElementById('overlay').classList.remove('open');
+      document.getElementById('sheet').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function rows(pairs) {
+      return pairs.map(([label, value]) =>
+        `<div class="sheet-row">` +
+          `<span class="sheet-row-label">${label}</span>` +
+          `<span class="sheet-row-value">${value}</span>` +
+        `</div>`
+      ).join('');
+    }
+
+    function openStatSheet(type) {
+      if (type === 'places') {
+        openSheet('Open right now', '14 businesses currently open on the corridor', rows([
+          ['☕ Cafés',        '4 open'],
+          ['🍜 Restaurants',  '5 open'],
+          ['🍺 Bars',         '2 opening soon'],
+          ['🛍 Retail',       '3 open'],
+          ['Total open',      '14 of 22']
+        ]));
+      } else if (type === 'corners') {
+        openSheet('Active corner crews', '3 corners claimed · meetups every Saturday at noon',
+          rows([
+            ['📍 Market & 7th',  'Glow Corner — crew of 8'],
+            ['📍 Market & 9th',  'Garden Corner — crew of 12'],
+            ['📍 Market & 6th',  'Chalk Corner — crew of 6'],
+            ['Next meetup',      'Saturday, 12pm'],
+            ['City grant',       '$50/month per corner']
+          ]) +
+          `<div class="sheet-row" style="border-bottom:none">` +
+            `<span class="sheet-row-label" style="color:var(--calypso);cursor:pointer" onclick="closeSheet();setTimeout(openAdoptSheet,300)">Adopt your own corner →</span>` +
+          `</div>`
+        );
+      } else if (type === 'events') {
+        const label = isNight ? 'Events tonight' : 'Events today';
+        openSheet(label, '7 events happening in Mid-Market today', rows([
+          ['🍲 Community Potluck', '12pm · MMF · Free'],
+          ['🗺 Scavenger Hunt',    '3pm · Market Street · Free'],
+          ['☀️ Sunset Yoga',      '6pm · UN Plaza · Free'],
+          ['🎨 Mural Opening',     '5pm · 1028 Market · Free'],
+          ['🎷 Jazz at The Chapel','7pm · The Chapel · $'],
+          ['🏃 Night Run',         '8:30pm · The Grove · Free'],
+          ['🎧 DJ Selena B',       '9pm · Vinyl SF · $']
+        ]));
+      } else if (type === 'outdoor') {
+        const pct   = isNight ? '38%' : '71%';
+        const spots = isNight ? 'Jane Warner Plaza, The Grove' : 'UN Plaza, Jane Warner Plaza';
+        const tip   = isNight ? 'After 7pm when wind drops' : 'Now — golden hour incoming';
+        openSheet('Outdoor vs Indoor', `${pct} of activity is happening outdoors right now`, rows([
+          ['🌳 Outdoor activity',  pct],
+          ['Weather',              '64°F, partly cloudy'],
+          ['Wind',                 '12 mph SW — typical SF'],
+          ['Top outdoor spots',   spots],
+          ['Best time to go out', tip]
+        ]));
+      }
+    }
+
+    function openClubsSheet() {
+      openSheet('Active clubs', 'Groups meeting in Mid-Market this weekend', rows([
+        ['🏃 Running Club',   'LIVE · starting in 20 min'],
+        ['🗺 Scavenger Hunt', '3pm · Market Street'],
+        ['🌙 Night Run',      '8:30pm · The Grove'],
+        ['🎷 Jazz listeners', '7pm · The Chapel'],
+        ['📸 Photo walk',     'Sunday 10am']
+      ]));
+    }
+
+    function openBusinessSheet(id) {
+      const b = businesses.find(x => x.id === id);
+      if (!b) return;
+      const status = b.isOpen ? `Open · closes ${b.closesAt}` : `Opens at ${b.opensAt}`;
+      openSheet(b.name, `${b.type} · ${status}`,
+        `<div class="sheet-body" style="margin-bottom:16px"><p>${b.story}</p></div>` +
+        rows([
+          ['Type',     b.type],
+          ['Status',   status],
+          ['Location', 'Mid-Market corridor']
+        ])
+      );
+    }
+
+    function openCornerSheet(id) {
+      const c = corners.find(x => x.id === id);
+      if (!c) return;
+      openSheet(`${c.cross} · ${c.name}`, `${c.tagEmoji} ${c.tagLabel}`,
+        `<div class="sheet-body" style="margin-bottom:16px"><p>${c.story}</p></div>` +
+        rows([
+          ['Meetup',           `${c.meetupDay} at ${c.meetupTime}`],
+          ['Crew size',        `${c.crewSize} neighbors`],
+          ['Photos shared',    `${c.ugcCount} photos`],
+          ['Best time to visit', c.bestTime],
+          ['City grant',       '$50/month']
+        ])
+      );
+    }
+
+    function openAdoptSheet() {
+      openSheet('Adopt a corner', 'Claim a block on Market Street and make it yours',
+        `<div class="sheet-body" style="margin-bottom:16px"><p>The Adopt a Corner program lets any resident or group claim a street corner on the Mid-Market corridor. Show up Saturday at noon, bring your crew, and make it something people want to stop at.</p></div>` +
+        rows([
+          ['How it works',     'Show up Saturdays at noon'],
+          ['Commitment',       '4 Saturdays/month'],
+          ['City reimbursement','$50/month'],
+          ['Starter kit',      'BLICK supply kit — free'],
+          ['Open corners',     '5 still available'],
+          ['Contact',          'corners@midmarketfoundation.org']
+        ])
+      );
+    }
+
+    function openStorySheet(id) {
+      const s = stories.find(x => x.id === id);
+      if (!s) return;
+      const bodyHTML = s.body.split('\n\n').map(p => `<p>${p}</p>`).join('');
+      openSheet(s.title, s.year, `<div class="sheet-body">${bodyHTML}</div>`);
+    }
+
+    function openFounderSheet(id) {
+      const f = founders.find(x => x.id === id);
+      if (!f) return;
+      openSheet(f.name, f.type,
+        `<div class="sheet-body" style="margin-bottom:16px"><p>${f.story}</p></div>` +
+        rows([
+          ['Partner since', '2026'],
+          ['Program',       'Founding Partner — The Pulse'],
+          ['Contact',       'hello@minds-shift.com']
+        ])
+      );
+    }
+
+    function openJoinSheet() {
+      openSheet('Become a founding partner', 'Join the neighborhood program at The Pulse',
+        `<div class="sheet-body" style="margin-bottom:16px"><p>Founding partners help The Pulse stay community-funded and community-built. Your name appears on every screen. Your contribution directly funds corner kits, neighborhood grants, and platform costs.</p></div>` +
+        rows([
+          ['Community tier',   '$50/month — name + logo'],
+          ['Neighborhood tier', '$150/month — above + events'],
+          ['Founding tier',    '$500/month — everything + co-brand'],
+          ['Contact',          'hello@minds-shift.com']
+        ])
+      );
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────────────────
+
+    renderPentagon();
+    renderFood();
+    renderCorners();
+    renderStories();
+    renderFounders();
+  </script>
+</body>
+</html>
