@@ -461,34 +461,42 @@
     }
 
     .cc-img {
-      height: clamp(100px, 16vh, 160px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: clamp(120px, 20vh, 200px);
       position: relative;
       flex-shrink: 0;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
     }
 
-    .cc-img.glow   { background: linear-gradient(160deg, #0D0020, #1A0035); }
-    .cc-img.plants { background: linear-gradient(160deg, #0A1F0A, #152E15); }
-    .cc-img.kids   { background: linear-gradient(160deg, #2A1F08, #3A2A10); }
+    /* Dark scrim so the badge stays readable over any photo */
+    .cc-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.10) 55%, transparent 100%);
+    }
 
-    .cc-emoji { font-size: clamp(40px, 5vw, 60px); line-height: 1; }
+    .cc-img.glow   { background-image: url('../images/glow-corner.jpeg'); }
+    .cc-img.plants { background-image: url('../images/garden-corner-1.jpeg'); }
+    .cc-img.kids   { background-image: url('../images/chalk-corner.jpeg'); }
 
     .cc-img-badge {
       position: absolute;
       bottom: 10px; left: 12px;
+      z-index: 1;
       font-family: var(--font-b);
-      font-size: clamp(7px, 0.65vw, 9px);
+      font-size: clamp(7px, 0.65vw, 10px);
       font-weight: 600;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      padding: 3px 8px;
+      padding: 3px 10px;
       border-radius: 100px;
+      backdrop-filter: blur(6px);
     }
-    .cc-img-badge.glow   { color: #C07AFF; background: rgba(180,79,255,0.20); }
-    .cc-img-badge.plants { color: #3DD880; background: rgba(45,184,112,0.20); }
-    .cc-img-badge.kids   { color: #F0C060; background: rgba(232,168,62,0.20); }
+    .cc-img-badge.glow   { color: #E0BDFF; background: rgba(100,0,180,0.45); }
+    .cc-img-badge.plants { color: #ADFFD4; background: rgba(0,80,40,0.50); }
+    .cc-img-badge.kids   { color: #FFE7A0; background: rgba(100,60,0,0.50); }
 
     .cc-info {
       padding: clamp(12px, 1.5vh, 18px) clamp(14px, 1.4vw, 20px);
@@ -833,7 +841,6 @@
           <!-- Glow Corner -->
           <div class="cc">
             <div class="cc-img glow">
-              <div class="cc-emoji">🌟</div>
               <div class="cc-img-badge glow">Blacklight Art</div>
             </div>
             <div class="cc-info">
@@ -862,7 +869,6 @@
           <!-- Garden Corner -->
           <div class="cc">
             <div class="cc-img plants">
-              <div class="cc-emoji">🌿</div>
               <div class="cc-img-badge plants">Community Garden</div>
             </div>
             <div class="cc-info">
@@ -891,7 +897,6 @@
           <!-- Chalk Corner -->
           <div class="cc">
             <div class="cc-img kids">
-              <div class="cc-emoji">🎨</div>
               <div class="cc-img-badge kids">Chalk Art</div>
             </div>
             <div class="cc-info">
