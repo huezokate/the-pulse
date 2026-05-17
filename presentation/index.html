@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adopt a Corner · The Pulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --stop:    #C0392B;
+      --coral:   #E8756A;
+      --pink:    #C2527A;
+      --teal:    #1BAAB0;
+      --honied:  #F2E8D5;
+      --bg-teal: #C9EDEC;
+
+      --text-primary:   #1A1A1A;
+      --text-secondary: #6B6B6B;
+      --text-muted:     #A0A0A0;
+
+      --font-d: 'DM Serif Display', Georgia, serif;
+      --font-b: 'DM Sans', system-ui, sans-serif;
+
+      --shadow-card:  0 4px 20px rgba(26,26,26,0.10);
+      --shadow-float: 0 8px 40px rgba(26,26,26,0.14);
+      --r: 14px;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #1A1A1A;
+      font-family: var(--font-b);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── DECK ── */
+    .deck {
+      width: 100vw; height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .track {
+      display: flex;
+      width: 300vw;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── SLIDE BACKGROUNDS ── */
+    .s1 { background: var(--bg-teal); }
+    .s2 { background: var(--honied); }
+    .s3 { background: #FAFAF8; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(16px, 2.5vh, 28px) clamp(32px, 5vw, 72px);
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--font-b);
+      font-size: clamp(10px, 1vw, 13px);
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .live-dot {
+      width: 7px; height: 7px;
+      background: var(--stop);
+      border-radius: 50%;
+      animation: pulsedot 2s ease-in-out infinite;
+    }
+    @keyframes pulsedot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.3; transform: scale(1.5); }
+    }
+
+    .slide-num {
+      font-family: var(--font-b);
+      font-size: clamp(10px, 0.9vw, 12px);
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    /* ── BODY ── */
+    .sbody {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 clamp(32px, 5vw, 72px) clamp(24px, 4vh, 48px);
+      gap: clamp(32px, 4vw, 64px);
+      min-height: 0;
+    }
+
+    .eyebrow {
+      font-family: var(--font-b);
+      font-size: clamp(9px, 0.8vw, 11px);
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: clamp(10px, 1.5vh, 18px);
+    }
+
+    /* ════════════════════════════════════════
+       SLIDE 1 — THE PULSE
+    ════════════════════════════════════════ */
+    .s1-left {
+      flex: 0 0 50%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s1-title {
+      font-family: var(--font-d);
+      font-size: clamp(48px, 7vw, 96px);
+      color: var(--text-primary);
+      line-height: 1.0;
+      margin-bottom: clamp(12px, 2vh, 24px);
+    }
+
+    .s1-sub {
+      font-family: var(--font-b);
+      font-size: clamp(14px, 1.4vw, 19px);
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 500px;
+      margin-bottom: clamp(20px, 3vh, 36px);
+    }
+
+    .stat-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: clamp(20px, 3vh, 36px);
+    }
+
+    .chip {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(26,26,26,0.10);
+      border-radius: 100px;
+      padding: clamp(6px, 0.8vh, 9px) clamp(14px, 1.5vw, 22px);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      backdrop-filter: blur(4px);
+    }
+
+    .chip-num {
+      font-family: var(--font-d);
+      font-size: clamp(18px, 2vw, 26px);
+      line-height: 1;
+    }
+    .chip-num.t { color: var(--teal); }
+    .chip-num.c { color: var(--coral); }
+    .chip-num.p { color: var(--pink); }
+    .chip-num.r { color: var(--stop); }
+
+    .chip-label {
+      font-family: var(--font-b);
+      font-size: clamp(10px, 0.9vw, 13px);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .partners {
+      font-family: var(--font-b);
+      font-size: clamp(9px, 0.8vw, 11px);
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* Dashboard mockup */
+    .s1-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+
+    .dash-mock {
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(26,26,26,0.08);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      padding: clamp(14px, 1.8vh, 22px) clamp(14px, 1.5vw, 20px);
+      width: min(420px, 38vw);
+      box-shadow: var(--shadow-float);
+    }
+
+    .mock-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: clamp(10px, 1.4vh, 18px);
+    }
+
+    .mock-brand {
+      font-family: var(--font-d);
+      font-size: clamp(14px, 1.4vw, 19px);
+      color: var(--text-primary);
+    }
+
+    .mock-live {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-b);
+      font-size: clamp(8px, 0.7vw, 10px);
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .mock-live-dot {
+      width: 5px; height: 5px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulsedot 2s ease-in-out infinite;
+    }
+
+    .mock-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(6px, 0.8vh, 10px);
+      margin-bottom: clamp(8px, 1vh, 14px);
+    }
+
+    .mock-card {
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: clamp(10px, 1.2vh, 14px) clamp(10px, 1vw, 14px);
+      box-shadow: 0 2px 8px rgba(26,26,26,0.07);
+    }
+
+    .mc-icon  { font-size: clamp(13px, 1.2vw, 16px); margin-bottom: 4px; display: block; }
+    .mc-num   { font-family: var(--font-d); font-size: clamp(22px, 2.4vw, 32px); line-height: 1; margin-bottom: 2px; }
+    .mc-label { font-family: var(--font-b); font-size: clamp(7px, 0.65vw, 9px); font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    .mc-delta { font-family: var(--font-b); font-size: clamp(7px, 0.65vw, 9px); color: var(--teal); margin-top: 3px; }
+
+    .mc-num.t { color: #11D4DC; }
+    .mc-num.c { color: #F32F11; }
+    .mc-num.p { color: #F217A2; }
+    .mc-num.m { color: var(--text-muted); }
+
+    .mock-activity {
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: clamp(10px, 1.2vh, 14px);
+      box-shadow: 0 2px 8px rgba(26,26,26,0.07);
+    }
+
+    .mock-act-label {
+      font-family: var(--font-b);
+      font-size: clamp(7px, 0.65vw, 9px);
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: clamp(6px, 0.8vh, 10px);
+    }
+
+    .mock-bar-row { margin-bottom: clamp(5px, 0.6vh, 8px); }
+
+    .mock-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-b);
+      font-size: clamp(8px, 0.7vw, 11px);
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .mock-track {
+      height: 4px;
+      background: rgba(26,26,26,0.07);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .mock-fill {
+      height: 100%;
+      border-radius: 8px;
+    }
+    .mock-fill.out { background: var(--teal); width: 71%; }
+    .mock-fill.inn { background: var(--coral); width: 29%; }
+
+    /* ════════════════════════════════════════
+       SLIDE 2 — ADOPT A CORNER
+    ════════════════════════════════════════ */
+    .s2-left {
+      flex: 0 0 44%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s2-title {
+      font-family: var(--font-d);
+      font-size: clamp(38px, 5.5vw, 78px);
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-bottom: clamp(16px, 2.5vh, 30px);
+    }
+
+    .s2-title em {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .s2-sub {
+      font-family: var(--font-b);
+      font-size: clamp(13px, 1.2vw, 17px);
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: clamp(18px, 2.5vh, 30px);
+      max-width: 400px;
+    }
+
+    .highlight-pills {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(8px, 1vh, 12px);
+    }
+
+    .hpill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-b);
+      font-size: clamp(12px, 1.1vw, 15px);
+      color: var(--text-primary);
+    }
+
+    .hpill-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .hpill-dot.teal  { background: var(--teal); }
+    .hpill-dot.coral { background: var(--coral); }
+    .hpill-dot.pink  { background: var(--pink); }
+    .hpill-dot.stop  { background: var(--stop); }
+
+    .s2-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(14px, 2vh, 24px);
+      min-width: 0;
+    }
+
+    .step-card {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(26,26,26,0.08);
+      border-radius: var(--r);
+      padding: clamp(16px, 2vh, 24px) clamp(18px, 2vw, 28px);
+      display: flex;
+      align-items: flex-start;
+      gap: clamp(14px, 1.5vw, 20px);
+      backdrop-filter: blur(6px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .step-num {
+      font-family: var(--font-d);
+      font-size: clamp(28px, 3vw, 44px);
+      line-height: 1;
+      flex-shrink: 0;
+      color: var(--text-muted);
+    }
+
+    .step-body { min-width: 0; }
+
+    .step-title {
+      font-family: var(--font-d);
+      font-size: clamp(16px, 1.6vw, 22px);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-family: var(--font-b);
+      font-size: clamp(11px, 1vw, 14px);
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ════════════════════════════════════════
+       SLIDE 3 — OUR CORNERS
+    ════════════════════════════════════════ */
+    .s3-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 0 clamp(32px, 5vw, 72px) clamp(24px, 3.5vh, 48px);
+      gap: clamp(16px, 2vh, 28px);
+    }
+
+    .s3-header {
+      flex-shrink: 0;
+    }
+
+    .s3-title {
+      font-family: var(--font-d);
+      font-size: clamp(28px, 3.5vw, 52px);
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .s3-sub {
+      font-family: var(--font-b);
+      font-size: clamp(12px, 1.1vw, 15px);
+      color: var(--text-secondary);
+    }
+
+    .corner-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(14px, 1.8vw, 24px);
+      flex: 1;
+      min-height: 0;
+    }
+
+    .cc {
+      background: #FFFFFF;
+      border-radius: 18px;
+      border: 1px solid rgba(26,26,26,0.09);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cc-img {
+      height: clamp(100px, 16vh, 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .cc-img.glow   { background: linear-gradient(160deg, #0D0020, #1A0035); }
+    .cc-img.plants { background: linear-gradient(160deg, #0A1F0A, #152E15); }
+    .cc-img.kids   { background: linear-gradient(160deg, #2A1F08, #3A2A10); }
+
+    .cc-emoji { font-size: clamp(40px, 5vw, 60px); line-height: 1; }
+
+    .cc-img-badge {
+      position: absolute;
+      bottom: 10px; left: 12px;
+      font-family: var(--font-b);
+      font-size: clamp(7px, 0.65vw, 9px);
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 100px;
+    }
+    .cc-img-badge.glow   { color: #C07AFF; background: rgba(180,79,255,0.20); }
+    .cc-img-badge.plants { color: #3DD880; background: rgba(45,184,112,0.20); }
+    .cc-img-badge.kids   { color: #F0C060; background: rgba(232,168,62,0.20); }
+
+    .cc-info {
+      padding: clamp(12px, 1.5vh, 18px) clamp(14px, 1.4vw, 20px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(6px, 0.8vh, 10px);
+      flex: 1;
+    }
+
+    .cc-name {
+      font-family: var(--font-d);
+      font-size: clamp(16px, 1.6vw, 22px);
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .cc-cross {
+      font-family: var(--font-b);
+      font-size: clamp(11px, 0.95vw, 13px);
+      color: var(--text-muted);
+    }
+
+    .cc-story {
+      font-family: var(--font-b);
+      font-size: clamp(11px, 0.95vw, 13px);
+      color: var(--text-secondary);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .cc-stats {
+      display: flex;
+      gap: clamp(12px, 1.5vw, 20px);
+      padding-top: clamp(8px, 1vh, 12px);
+      border-top: 1px solid rgba(26,26,26,0.07);
+    }
+
+    .cc-stat { display: flex; flex-direction: column; gap: 1px; }
+
+    .cc-stat-num {
+      font-family: var(--font-d);
+      font-size: clamp(16px, 1.6vw, 22px);
+      line-height: 1;
+    }
+    .cc-stat-num.glow   { color: #B44FFF; }
+    .cc-stat-num.plants { color: #2DB870; }
+    .cc-stat-num.kids   { color: #E8A83E; }
+
+    .cc-stat-label {
+      font-family: var(--font-b);
+      font-size: clamp(8px, 0.7vw, 10px);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .impact-bar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: var(--text-primary);
+      border-radius: 14px;
+      padding: clamp(14px, 1.8vh, 22px) clamp(24px, 2.5vw, 36px);
+    }
+
+    .impact-quote {
+      font-family: var(--font-d);
+      font-size: clamp(13px, 1.4vw, 19px);
+      color: #FFFFFF;
+      line-height: 1.4;
+      font-style: italic;
+      flex: 1;
+    }
+
+    .impact-cta {
+      flex-shrink: 0;
+      background: var(--teal);
+      color: #FFFFFF;
+      font-family: var(--font-b);
+      font-size: clamp(11px, 1vw, 13px);
+      font-weight: 600;
+      padding: clamp(10px, 1.2vh, 14px) clamp(20px, 2vw, 28px);
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .impact-cta:hover { opacity: 0.85; }
+
+    /* ── BOTTOM NAV ── */
+    .nav-bar {
+      position: fixed;
+      bottom: clamp(16px, 2.5vh, 28px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: clamp(14px, 1.5vw, 20px);
+      background: rgba(26,26,26,0.85);
+      border-radius: 100px;
+      padding: clamp(8px, 1vh, 12px) clamp(16px, 1.8vw, 22px);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.55);
+      font-size: clamp(14px, 1.2vw, 17px);
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+    .nav-btn:hover { color: #FFFFFF; }
+    .nav-btn:disabled { color: rgba(255,255,255,0.2); cursor: default; }
+
+    .dots { display: flex; gap: 7px; align-items: center; }
+
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.30);
+      cursor: pointer;
+      transition: background 0.25s, width 0.25s;
+    }
+    .dot.active {
+      width: 20px;
+      border-radius: 100px;
+      background: #FFFFFF;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      position: fixed;
+      top: clamp(16px, 2.5vh, 28px);
+      right: clamp(32px, 5vw, 72px);
+      font-family: var(--font-b);
+      font-size: clamp(10px, 0.9vw, 12px);
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+      z-index: 50;
+    }
+    .back-link:hover { color: var(--text-primary); }
+  </style>
+</head>
+<body>
+
+<div class="deck">
+  <div class="track" id="track">
+
+    <!-- ══════════════════════════════════
+         SLIDE 1 — THE PULSE
+    ══════════════════════════════════ -->
+    <div class="slide s1">
+      <div class="topbar">
+        <div class="brand">
+          <div class="live-dot"></div>
+          The Pulse
+        </div>
+        <span class="slide-num">1 / 3</span>
+      </div>
+
+      <div class="sbody">
+        <div class="s1-left">
+          <p class="eyebrow">Mid-Market SF · Market St, 5th – Van Ness</p>
+
+          <h1 class="s1-title">The neighborhood<br>at a glance.</h1>
+
+          <p class="s1-sub">A real-time community dashboard surfacing open businesses, corner crews, events, and local stories along Market Street — made by the neighborhood, for the neighborhood.</p>
+
+          <div class="stat-chips">
+            <div class="chip">
+              <span class="chip-num t">14</span>
+              <span class="chip-label">Places open</span>
+            </div>
+            <div class="chip">
+              <span class="chip-num c">3</span>
+              <span class="chip-label">Corners active</span>
+            </div>
+            <div class="chip">
+              <span class="chip-num p">7</span>
+              <span class="chip-label">Events today</span>
+            </div>
+            <div class="chip">
+              <span class="chip-num r">71%</span>
+              <span class="chip-label">Outdoor activity</span>
+            </div>
+          </div>
+
+          <p class="partners">Partners: BLICK Art Materials · Mid-Market Foundation · MMBA · Urban Alchemy</p>
+        </div>
+
+        <!-- CSS dashboard mockup -->
+        <div class="s1-right">
+          <div class="dash-mock">
+            <div class="mock-topbar">
+              <span class="mock-brand">The Pulse</span>
+              <span class="mock-live">
+                <span class="mock-live-dot"></span>
+                Live
+              </span>
+            </div>
+
+            <div class="mock-grid">
+              <div class="mock-card">
+                <span class="mc-icon">🏪</span>
+                <div class="mc-num t">14</div>
+                <div class="mc-label">Places Open</div>
+                <div class="mc-delta">↑ 3 just opened</div>
+              </div>
+              <div class="mock-card">
+                <span class="mc-icon">📍</span>
+                <div class="mc-num c">3</div>
+                <div class="mc-label">Corners Active</div>
+                <div class="mc-delta">Sat noon meetup</div>
+              </div>
+              <div class="mock-card">
+                <span class="mc-icon">📅</span>
+                <div class="mc-num p">7</div>
+                <div class="mc-label">Events Today</div>
+                <div class="mc-delta">2 tonight</div>
+              </div>
+              <div class="mock-card">
+                <span class="mc-icon">☀️</span>
+                <div class="mc-num m">71%</div>
+                <div class="mc-label">Outdoor</div>
+                <div class="mc-delta">It's a park day</div>
+              </div>
+            </div>
+
+            <div class="mock-activity">
+              <div class="mock-act-label">Outdoor vs Indoor</div>
+              <div class="mock-bar-row">
+                <div class="mock-bar-labels"><span>🌳 Outdoor</span><span>71%</span></div>
+                <div class="mock-track"><div class="mock-fill out"></div></div>
+              </div>
+              <div class="mock-bar-row">
+                <div class="mock-bar-labels"><span>🏠 Indoor</span><span>29%</span></div>
+                <div class="mock-track"><div class="mock-fill inn"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         SLIDE 2 — ADOPT A CORNER
+    ══════════════════════════════════ -->
+    <div class="slide s2">
+      <div class="topbar">
+        <div class="brand">
+          <div class="live-dot"></div>
+          The Pulse
+        </div>
+        <span class="slide-num">2 / 3</span>
+      </div>
+
+      <div class="sbody">
+        <div class="s2-left">
+          <p class="eyebrow">The Program</p>
+
+          <h2 class="s2-title">Adopt a Corner.<br><em>Make it yours.</em></h2>
+
+          <p class="s2-sub">Residents claim a street corner on Market Street, show up every Saturday at noon, and collectively turn it into something the whole block can feel. No experience required — just show up.</p>
+
+          <div class="highlight-pills">
+            <div class="hpill">
+              <div class="hpill-dot teal"></div>
+              <span>$50/month city grant reimbursement</span>
+            </div>
+            <div class="hpill">
+              <div class="hpill-dot coral"></div>
+              <span>BLICK Art Materials activation kit on approval</span>
+            </div>
+            <div class="hpill">
+              <div class="hpill-dot pink"></div>
+              <span>Your corner gets a card, QR code &amp; map pin on The Pulse</span>
+            </div>
+            <div class="hpill">
+              <div class="hpill-dot stop"></div>
+              <span>Partnered with Mid-Market Foundation &amp; Urban Alchemy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="s2-right">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Read the Guidelines</div>
+              <div class="step-desc">Community principles, safety expectations, and a list of what BLICK stocks. Takes 5 minutes — sets you up for the conversation.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">File a Preliminary Application</div>
+              <div class="step-desc">Choose your corner, describe your vision, name your crew. Goes to Civic Center for a 4–6 week review. You'll hear back with next steps and permit guidance.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Activate Every Saturday</div>
+              <div class="step-desc">One month to set up, document, and file permits. Then you're live — meetup at noon, post photos, appear on The Pulse. Your corner becomes community infrastructure.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         SLIDE 3 — OUR CORNERS
+    ══════════════════════════════════ -->
+    <div class="slide s3">
+      <div class="topbar">
+        <div class="brand">
+          <div class="live-dot"></div>
+          The Pulse
+        </div>
+        <span class="slide-num">3 / 3</span>
+      </div>
+
+      <div class="s3-wrap">
+        <div class="s3-header">
+          <p class="eyebrow">Mid-Market SF · 3 Active Corners</p>
+          <h2 class="s3-title">Community in action.</h2>
+        </div>
+
+        <div class="corner-cards">
+          <!-- Glow Corner -->
+          <div class="cc">
+            <div class="cc-img glow">
+              <div class="cc-emoji">🌟</div>
+              <div class="cc-img-badge glow">Blacklight Art</div>
+            </div>
+            <div class="cc-info">
+              <div>
+                <div class="cc-name">The Glow Corner</div>
+                <div class="cc-cross">Market &amp; 7th</div>
+              </div>
+              <div class="cc-story">UV paint, glow tape, and whatever Marcus and Jade can haul from BLICK. After dark, it stops traffic. Wear white — it'll catch the light.</div>
+              <div class="cc-stats">
+                <div class="cc-stat">
+                  <span class="cc-stat-num glow">8</span>
+                  <span class="cc-stat-label">Crew</span>
+                </div>
+                <div class="cc-stat">
+                  <span class="cc-stat-num glow">47</span>
+                  <span class="cc-stat-label">Photos</span>
+                </div>
+                <div class="cc-stat">
+                  <span class="cc-stat-num glow">Sat 12pm</span>
+                  <span class="cc-stat-label">Meetup</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Garden Corner -->
+          <div class="cc">
+            <div class="cc-img plants">
+              <div class="cc-emoji">🌿</div>
+              <div class="cc-img-badge plants">Community Garden</div>
+            </div>
+            <div class="cc-info">
+              <div>
+                <div class="cc-name">Garden Corner</div>
+                <div class="cc-cross">Market &amp; 9th</div>
+              </div>
+              <div class="cc-story">Twelve neighbors tend the planter boxes every Saturday. Herbs, native flowers, the occasional tomato. Bring seeds, take cuttings — the corner is for everyone.</div>
+              <div class="cc-stats">
+                <div class="cc-stat">
+                  <span class="cc-stat-num plants">12</span>
+                  <span class="cc-stat-label">Crew</span>
+                </div>
+                <div class="cc-stat">
+                  <span class="cc-stat-num plants">31</span>
+                  <span class="cc-stat-label">Photos</span>
+                </div>
+                <div class="cc-stat">
+                  <span class="cc-stat-num plants">Sat 12pm</span>
+                  <span class="cc-stat-label">Meetup</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chalk Corner -->
+          <div class="cc">
+            <div class="cc-img kids">
+              <div class="cc-emoji">🎨</div>
+              <div class="cc-img-badge kids">Chalk Art</div>
+            </div>
+            <div class="cc-info">
+              <div>
+                <div class="cc-name">Chalk Corner</div>
+                <div class="cc-cross">Market &amp; 6th</div>
+              </div>
+              <div class="cc-story">Every week the crew picks a theme and covers the sidewalk in color. BLICK chalk kits available at the corner for first-timers — just show up.</div>
+              <div class="cc-stats">
+                <div class="cc-stat">
+                  <span class="cc-stat-num kids">6</span>
+                  <span class="cc-stat-label">Crew</span>
+                </div>
+                <div class="cc-stat">
+                  <span class="cc-stat-num kids">22</span>
+                  <span class="cc-stat-label">Photos</span>
+                </div>
+                <div class="cc-stat">
+                  <span class="cc-stat-num kids">Sat 12pm</span>
+                  <span class="cc-stat-label">Meetup</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="impact-bar">
+          <p class="impact-quote">"26 neighbors showing up every Saturday to make Market Street feel like home. Each corner a different story — together they're a movement."</p>
+          <a class="impact-cta" href="../index.html">View The Pulse →</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /track -->
+</div><!-- /deck -->
+
+<!-- Bottom navigation -->
+<nav class="nav-bar" id="navBar">
+  <button class="nav-btn" id="btnPrev" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots">
+    <div class="dot active" onclick="goTo(0)"></div>
+    <div class="dot" onclick="goTo(1)"></div>
+    <div class="dot" onclick="goTo(2)"></div>
+  </div>
+  <button class="nav-btn" id="btnNext" onclick="go(1)">→</button>
+</nav>
+
+<a class="back-link" href="../index.html">← Back to The Pulse</a>
+
+<script>
+  let current = 0;
+  const total = 3;
+  const track = document.getElementById('track');
+  const dots = document.querySelectorAll('.dot');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+
+  function goTo(n) {
+    current = Math.max(0, Math.min(total - 1, n));
+    track.style.transform = `translateX(-${current * 100 / 3}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === total - 1;
+  }
+
+  function go(dir) { goTo(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ')  go(1);
+    if (e.key === 'ArrowLeft')                     go(-1);
+  });
+
+  // Swipe support
+  let touchX = null;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+    touchX = null;
+  });
+</script>
+</body>
+</html>
