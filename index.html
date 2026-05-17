@@ -72,15 +72,28 @@
       color: var(--text-primary);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
     /* ── APP CONTAINER ── */
     .app {
       max-width: 430px;
       margin: 0 auto;
-      background: var(--bg);
       min-height: 100vh;
       padding-bottom: 84px;
+      position: relative;
+    }
+
+    /* ── FULL-BLEED SECTIONS ── */
+    /* Break white-tinted sections out of the centered .app container so their
+       backgrounds reach the viewport edges while content stays aligned. */
+    .hero,
+    .activity-section,
+    .section-bg-warm,
+    .map-widget-section {
+      width: 100vw;
+      margin-left: 50%;
+      transform: translateX(-50%);
     }
 
     /* ── HERO ── */
@@ -366,6 +379,7 @@
 
     .section-bg-warm { background: rgba(255,255,255,0.5); }
     .map-widget-section { background: rgba(255,255,255,0.5); }
+    .founders-section { background: var(--honied); }
 
     .section-header {
       display: flex;
@@ -1642,6 +1656,50 @@
       .corners-page-list { padding: 40px 64px 80px; }
     }
 
+    /* ── LARGE DESKTOP — adaptive padding for full-bleed sections ── */
+    /* As viewport grows past ~1200px the full-bleed sections need more inset so
+       content stays within a comfortable reading/scan width (not edge-to-edge).
+       Formula: max(64px, (100vw - target-content-width) / 2)             */
+    @media (min-width: 1200px) {
+      /* Hero: content up to ~1200px wide */
+      .hero {
+        padding-left:  max(64px, calc(50vw - 600px));
+        padding-right: max(64px, calc(50vw - 600px));
+      }
+      .live-badge { right: max(64px, calc(50vw - 600px)); }
+
+      /* Activity row: cap at ~960px so widget cards don't go cavernous */
+      .activity-section {
+        padding-left:  max(64px, calc(50vw - 480px));
+        padding-right: max(64px, calc(50vw - 480px));
+      }
+
+      /* Section headers + dividers + scroll rows inside full-bleed sections */
+      .section-bg-warm   .section-header,
+      .map-widget-section .section-header {
+        padding-left:  max(64px, calc(50vw - 580px));
+        padding-right: max(64px, calc(50vw - 580px));
+      }
+      .section-bg-warm   .divider,
+      .map-widget-section .divider {
+        margin-left:  max(64px, calc(50vw - 580px));
+        margin-right: max(64px, calc(50vw - 580px));
+      }
+      .section-bg-warm .scroll-row {
+        padding-left:  max(64px, calc(50vw - 580px));
+        padding-right: max(64px, calc(50vw - 580px));
+      }
+
+      /* Pulse map: grow with section but stay inset */
+      #pulse-map {
+        margin-left:  max(64px, calc(50vw - 580px));
+        margin-right: max(64px, calc(50vw - 580px));
+        width: auto;
+      }
+
+      /* Stats section (inside .app, not full-bleed) — keep existing 64px */
+    }
+
     /* ── NIGHT MODE ── */
     /* Smooth theme transition on key containers */
     body, html,
@@ -1650,7 +1708,7 @@
     .food-chip, .corner-card, .story-card, .founder-card,
     .bottom-nav, .top-nav, .sheet, .sheet-close,
     .toggle-wrap, .toggle-btn, .corner-detail-card,
-    .corners-page-header, .adopt-modal, #page-corners {
+    .corners-page-header, .adopt-modal, #page-corners, .founders-section {
       transition: background-color 0.38s ease, color 0.38s ease,
                   border-color 0.38s ease, box-shadow 0.38s ease;
     }
@@ -1696,6 +1754,7 @@
     body.night-mode .section-bg-warm {
       background: rgba(255, 255, 255, 0.04);
     }
+    body.night-mode .founders-section { background: var(--surface); }
 
     body.night-mode .bottom-nav {
       background: rgba(10, 22, 40, 0.96);
@@ -1736,12 +1795,11 @@
     .map-widget-section { padding-bottom: var(--gap-section); }
 
     #pulse-map {
-      width: 100%;
       height: 360px;
       border-radius: var(--radius-lg);
       overflow: hidden;
       margin: 0 var(--page-px);
-      width: calc(100% - var(--page-px) * 2);
+      width: calc(100% - 2 * var(--page-px));
     }
 
     .map-legend {
@@ -1834,6 +1892,7 @@
     @media (min-width: 1024px) {
       #pulse-map { margin: 0 64px; width: calc(100% - 128px); }
     }
+    /* Above 1200px the large-desktop rule takes over via margin:auto + width:auto */
   </style>
 </head>
 <body>
@@ -2008,7 +2067,7 @@
     </div>
 
     <!-- ── FOUNDING PARTNERS ── -->
-    <div class="section" style="padding-bottom:40px;background:#F2E8D5">
+    <div class="section founders-section" style="padding-bottom:40px">
       <div class="section-header">
         <h2 class="section-title">Founding Partners</h2>
       </div>
@@ -2831,7 +2890,10 @@
 
       if (isCorners) {
         renderCornerDetails();
-        setTimeout(initMap, 80);
+        setTimeout(() => {
+          initMap();
+          if (leafletMap) leafletMap.invalidateSize();
+        }, 120);
         // Check if hash targets a specific corner
         const hash = window.location.hash;
         if (hash.startsWith('#corner/')) {
@@ -3022,7 +3084,7 @@
     // ── PULSE MAP ────────────────────────────────────────────────────────────
 
     const MAPBOX_TOKEN = 'pk.eyJ1Ijoia2F0ZWh1ZXpvIiwiYSI6ImNtcDh3NGI3aTBod2QycG' +
-      'BvZDU1YXFpcmUifQ.vgNqOM0dmMRV0LQNaZ1Ryw';
+      '9vZDU1YXFpcmUifQ.vgNqOM0dmMRV0LQNaZ1Ryw';
 
     const mapSpots = [
       // Corners
@@ -3061,10 +3123,12 @@
         attributionControl: false,
         interactive: true,
       });
+      window._pulseMap = map;
 
       map.addControl(new mapboxgl.AttributionControl({ compact: true }));
       map.scrollZoom.disable();
       map.on('load', () => {
+        map.resize();
         mapSpots.forEach(spot => {
           const color  = typeColors[spot.type];
           const delay  = typeDelays[spot.type];
@@ -3111,6 +3175,12 @@
     renderStories();
     renderFounders();
     initPulseMap();
+
+    // Resize Mapbox when layout changes (full-bleed sections change at breakpoints)
+    window.addEventListener('resize', () => {
+      const m = window._pulseMap;
+      if (m) m.resize();
+    });
   </script>
 </body>
 </html>
